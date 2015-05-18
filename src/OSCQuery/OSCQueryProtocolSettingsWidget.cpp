@@ -38,7 +38,6 @@ void
 OSCQueryProtocolSettingsWidget::setDefaults()
 {
     Q_ASSERT(m_deviceNameEdit);
-    Q_ASSERT(m_portOutputSBox);
     Q_ASSERT(m_localHostEdit);
 
     //TODO: we should use QSettings ?
