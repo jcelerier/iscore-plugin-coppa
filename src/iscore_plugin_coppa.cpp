@@ -9,6 +9,11 @@ iscore_plugin_coppa::iscore_plugin_coppa() :
 {
 }
 
+iscore_plugin_coppa::~iscore_plugin_coppa()
+{
+
+}
+
 iscore::PluginControlInterface* iscore_plugin_coppa::control()
 {
     return new coppaControl{nullptr};

@@ -17,10 +17,6 @@ OSCQueryProtocolSettingsWidget::buildGUI()
     QLabel* deviceNameLabel = new QLabel(tr("Device name"), this);
     m_deviceNameEdit = new QLineEdit(this);
 
-    QLabel* portOutputLabel = new QLabel(tr("Port (destination)"), this);
-    m_portOutputSBox = new QSpinBox(this);
-    m_portOutputSBox->setRange(0, 65535);
-
     QLabel* localHostLabel = new QLabel(tr("Host"), this);
     m_localHostEdit = new QLineEdit(this);
 
@@ -30,11 +26,8 @@ OSCQueryProtocolSettingsWidget::buildGUI()
     gLayout->addWidget(deviceNameLabel, 0, 0, 1, 1);
     gLayout->addWidget(m_deviceNameEdit, 0, 1, 1, 1);
 
-    gLayout->addWidget(portOutputLabel, 1, 0, 1, 1);
-    gLayout->addWidget(m_portOutputSBox, 1, 1, 1, 1);
-
-    gLayout->addWidget(localHostLabel, 2, 0, 1, 1);
-    gLayout->addWidget(m_localHostEdit, 2, 1, 1, 1);
+    gLayout->addWidget(localHostLabel, 1, 0, 1, 1);
+    gLayout->addWidget(m_localHostEdit, 1, 1, 1, 1);
 
     setLayout(gLayout);
 
@@ -51,8 +44,7 @@ OSCQueryProtocolSettingsWidget::setDefaults()
     //TODO: we should use QSettings ?
 
     m_deviceNameEdit->setText("OSCQueryDevice");
-    m_portOutputSBox->setValue(9998);
-    m_localHostEdit->setText("127.0.0.1");
+    m_localHostEdit->setText("http://127.0.0.1:9002");
 }
 
 #include "OSCQuerySpecificSettings.hpp"
@@ -63,11 +55,10 @@ DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
     DeviceSettings s;
     s.name = m_deviceNameEdit->text();
 
-    OSCQuerySpecificSettings minuit;
-    minuit.host = m_localHostEdit->text();
-    minuit.port = m_portOutputSBox->value();
+    OSCQuerySpecificSettings specificsettings;
+    specificsettings.host = m_localHostEdit->text();
 
-    s.deviceSpecificSettings = QVariant::fromValue(minuit);
+    s.deviceSpecificSettings = QVariant::fromValue(specificsettings);
     return s;
 }
 
@@ -75,11 +66,10 @@ void
 OSCQueryProtocolSettingsWidget::setSettings(const DeviceSettings &settings)
 {
     m_deviceNameEdit->setText(settings.name);
-    OSCQuerySpecificSettings minuit;
+    OSCQuerySpecificSettings specificsettings;
     if(settings.deviceSpecificSettings.canConvert<OSCQuerySpecificSettings>())
     {
-        minuit = settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>();
-        m_portOutputSBox->setValue(minuit.port);
-        m_localHostEdit->setText(minuit.host);
+        specificsettings = settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>();
+        m_localHostEdit->setText(specificsettings.host);
     }
 }

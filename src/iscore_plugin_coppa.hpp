@@ -17,7 +17,7 @@ class iscore_plugin_coppa:
 
     public:
         iscore_plugin_coppa();
-        virtual ~iscore_plugin_coppa() = default;
+        virtual ~iscore_plugin_coppa();
 
         virtual iscore::PluginControlInterface* control() override;
 

@@ -1,10 +1,14 @@
 #pragma once
 #include <DeviceExplorer/Protocol/DeviceInterface.hpp>
 
-namespace OSSIA
+namespace coppa
 {
-class Device;
+namespace oscquery
+{
+class RemoteDevice;
 }
+}
+
 class OSCQueryDevice : public DeviceInterface
 {
     public:
@@ -18,4 +22,8 @@ class OSCQueryDevice : public DeviceInterface
 
         void sendMessage(Message& mess) override;
         bool check(const QString& str) override;
+
+    private:
+        coppa::oscquery::RemoteDevice* m_dev{};
+
 };

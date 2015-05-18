@@ -4,7 +4,6 @@
 
 struct OSCQuerySpecificSettings
 {
-    int port{};
     QString host;
 };
 Q_DECLARE_METATYPE(OSCQuerySpecificSettings)

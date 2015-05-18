@@ -21,7 +21,6 @@ class OSCQueryProtocolSettingsWidget : public ProtocolSettingsWidget
 
     protected:
         QLineEdit* m_deviceNameEdit;
-        QSpinBox* m_portOutputSBox;
         QLineEdit* m_localHostEdit;
 
 };
