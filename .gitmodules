@@ -1,0 +1,6 @@
+[submodule "coppa"]
+	path = coppa
+	url = git://github.com/jcelerier/coppa
+[submodule "i-score"]
+	path = i-score
+	url = git://github.com/OSSIA/i-score
