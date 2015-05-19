@@ -15,6 +15,32 @@ bool OSCQueryDevice::canRefresh() const
     return true;
 }
 
+void setNodeParameters(const coppa::oscquery::Parameter& p, Node* node)
+{
+    AddressSettings s;
+    s.name = QString::fromStdString(p.destination);
+    if(p.values.size() > 0)
+    {
+        switch(p.values.front().which())
+        {
+            case 0:
+                s.valueType = "Int";
+                break;
+
+            case 1:
+                s.valueType = "Float";
+                break;
+
+            case 3:
+                break;
+
+            default:
+                break;
+        }
+    }
+    node->setAddressSettings(s);
+}
+
 
 void insertNode(const coppa::oscquery::Parameter& p, Node* rootNode)
 {
@@ -23,7 +49,7 @@ void insertNode(const coppa::oscquery::Parameter& p, Node* rootNode)
         splitted.removeFirst();
     if(splitted.size() == 1) // It's the root node
     {
-
+        setNodeParameters(p, rootNode);
         return;
     }
 
@@ -33,40 +59,25 @@ void insertNode(const coppa::oscquery::Parameter& p, Node* rootNode)
         auto cdrn = currentNode->children();
         auto beg = cdrn.begin();
         auto end = cdrn.end();
-        auto it = std::find_if(beg, end,
+        auto it = std::find_if(
+                      beg,
+                      end,
                       [&] (Node* n) { return n->name() == splitted[i]; });
 
         if(it != end)
         {
-            if(i == splitted.size() - 1)
-            {
-                // Set the parameters on the node
-                return;
-            }
-            else
-            {
-                currentNode = *it;
-                continue;
-            }
+            currentNode = *it;
         }
         else
         {
             auto n = new Node;
             n->setName(splitted[i]);
             currentNode->addChild(n);
-            if(i == splitted.size() - 1)
-            {
-                // Create and set the parameters on the node
-                return;
-            }
-            else
-            {
-                currentNode = n;
-                continue;
-            }
+            currentNode = n;
         }
     }
 
+    setNodeParameters(p, currentNode);
 }
 #include <iostream>
 using namespace std;
