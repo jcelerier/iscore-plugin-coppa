@@ -7,7 +7,7 @@
 OSCQueryDevice::OSCQueryDevice(const DeviceSettings &settings):
     DeviceInterface{settings}
 {
-    m_dev = new coppa::oscquery::RemoteDevice("http://127.0.0.1:9002/");
+    m_dev = new coppa::oscquery::RemoteDevice(settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>().host.toStdString());
 }
 
 bool OSCQueryDevice::canRefresh() const
@@ -15,10 +15,10 @@ bool OSCQueryDevice::canRefresh() const
     return true;
 }
 
-void setNodeParameters(const coppa::oscquery::Parameter& p, Node* node)
+void setNodeParameters(const coppa::oscquery::Parameter& p, QString name, Node* node)
 {
     AddressSettings s;
-    s.name = QString::fromStdString(p.destination);
+    s.name = name;
     if(p.values.size() > 0)
     {
         switch(p.values.front().which())
@@ -49,7 +49,7 @@ void insertNode(const coppa::oscquery::Parameter& p, Node* rootNode)
         splitted.removeFirst();
     if(splitted.size() == 1) // It's the root node
     {
-        setNodeParameters(p, rootNode);
+        setNodeParameters(p, rootNode->name(), rootNode);
         return;
     }
 
@@ -77,7 +77,7 @@ void insertNode(const coppa::oscquery::Parameter& p, Node* rootNode)
         }
     }
 
-    setNodeParameters(p, currentNode);
+    setNodeParameters(p, splitted.last(), currentNode);
 }
 #include <iostream>
 using namespace std;
@@ -120,7 +120,26 @@ void OSCQueryDevice::removeAddress(const QString &address)
 
 void OSCQueryDevice::sendMessage(Message &mess)
 {
-    qDebug() << Q_FUNC_INFO << "TODO";
+    const auto& p = m_dev->get(mess.address.toStdString());
+
+    coppa::oscquery::Values v;
+
+    // TODO add QPointF to the supported values.
+    // TODO check for a mismatch
+    if(p.values.front().which() == 0)
+    {
+        v.values.push_back(mess.value.toInt());
+    }
+    else if(p.values.front().which() == 1)
+    {
+        v.values.push_back(mess.value.toFloat());
+    }
+    else if(p.values.front().which() == 3)
+    {
+        v.values.push_back(mess.value.toString().toStdString());
+    }
+
+    m_dev->set(mess.address.toStdString(), v);
 }
 
 
