@@ -4,3 +4,6 @@
 [submodule "i-score"]
 	path = i-score
 	url = git://github.com/OSSIA/i-score
+[submodule "ossia_wrapper/API"]
+	path = ossia_wrapper/src/API
+	url = https://github.com/OSSIA/API
