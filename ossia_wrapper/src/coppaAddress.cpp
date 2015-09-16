@@ -100,6 +100,8 @@ OSSIA::Address&coppa::ow::Address::setValue(
         case OSSIA::Value::Type::STRING:
             p.values.push_back(static_cast<const OSSIA::String*>(v)->value);
             break;
+        default:
+            break;
     }
 
     static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().set(p.destination, p);
@@ -149,7 +151,7 @@ class coppaDomain : public OSSIA::Domain
 
     public:
         coppaDomain(coppa::oscquery::Range d):
-            m_domain{d}
+            m_domain(d)
         {
 
         }
