@@ -36,7 +36,7 @@ OSSIA::Node& coppa::ow::Node::setName(std::string)
     return *this;
 }
 
-const std::shared_ptr<OSSIA::Address>& coppa::ow::Node::getAddress() const
+std::shared_ptr<OSSIA::Address> coppa::ow::Node::getAddress() const
 {
     return m_address;
 }
@@ -54,6 +54,14 @@ bool coppa::ow::Node::removeAddress()
 
 OSSIA::Container<OSSIA::Node>::iterator coppa::ow::Node::emplace(
         OSSIA::Container<OSSIA::Node>::const_iterator,
+        std::string)
+{
+    return {};
+}
+
+OSSIA::Container<OSSIA::Node>::iterator coppa::ow::Node::insert(
+        OSSIA::Container<OSSIA::Node>::const_iterator,
+        std::shared_ptr<OSSIA::Node>,
         std::string)
 {
     return {};

@@ -47,11 +47,11 @@ OSCQueryProtocolSettingsWidget::setDefaults()
 }
 
 #include "OSCQuerySpecificSettings.hpp"
-DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
+iscore::DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
 {
     Q_ASSERT(m_deviceNameEdit);
 
-    DeviceSettings s;
+    iscore::DeviceSettings s;
     s.name = m_deviceNameEdit->text();
 
     OSCQuerySpecificSettings specificsettings;
@@ -62,7 +62,7 @@ DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
 }
 
 void
-OSCQueryProtocolSettingsWidget::setSettings(const DeviceSettings &settings)
+OSCQueryProtocolSettingsWidget::setSettings(const iscore::DeviceSettings &settings)
 {
     m_deviceNameEdit->setText(settings.name);
     OSCQuerySpecificSettings specificsettings;

@@ -2,6 +2,7 @@
 
 #include <Network/Node.h>
 #include <Network/Protocol.h>
+#include <coppa/oscquery/device/remote.hpp>
 
 namespace OSSIA
 {
@@ -19,7 +20,6 @@ class OSCQueryClient : public Protocol
 };
 }
 
-#include <coppa/oscquery/device/remote.hpp>
 namespace coppa
 {
 namespace ow
@@ -29,11 +29,11 @@ class OSCQueryClient: public OSSIA::OSCQueryClient
         coppa::oscquery::remote_device m_dev;
     public:
         OSCQueryClient(std::string addr);
-        bool pullAddressValue(std::shared_ptr<OSSIA::Address>) const override;
 
-        bool pushAddressValue(std::shared_ptr<OSSIA::Address>) const override;
-
+        bool pullAddressValue(OSSIA::Address&) const override;
+        bool pushAddressValue(const OSSIA::Address&) const override;
         bool observeAddressValue(std::shared_ptr<OSSIA::Address>, bool) const override;
+        bool updateChildren(OSSIA::Node& node) const override;
 
         auto& dev() { return m_dev; }
         const auto& dev() const { return m_dev; }

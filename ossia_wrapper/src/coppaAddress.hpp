@@ -14,6 +14,7 @@ class Address : public OSSIA::Address
 {
         std::shared_ptr<coppa::ow::Node> m_parent;
 
+        mutable std::shared_ptr<OSSIA::Domain> m_domain;
     public:
         Address(std::shared_ptr<coppa::ow::Node> parent);
         const std::shared_ptr<OSSIA::Node> getNode() const override;

@@ -24,12 +24,12 @@ std::string coppa::ow::Device::getName() const
     return "";
 }
 
-OSSIA::Node&coppa::ow::Device::setName(std::string)
+OSSIA::Node& coppa::ow::Device::setName(std::string)
 {
     return *this;
 }
 
-const std::shared_ptr<OSSIA::Address>&coppa::ow::Device::getAddress() const
+std::shared_ptr<OSSIA::Address> coppa::ow::Device::getAddress() const
 {
     return nullptr;
 }
@@ -44,7 +44,9 @@ bool coppa::ow::Device::removeAddress()
     return false;
 }
 
-OSSIA::Container<OSSIA::Node>::iterator coppa::ow::Device::emplace(OSSIA::Container<OSSIA::Node>::const_iterator, std::string)
+OSSIA::Container<OSSIA::Node>::iterator coppa::ow::Device::emplace(
+        OSSIA::Container<OSSIA::Node>::const_iterator,
+        std::string)
 {
     return {};
 }
@@ -59,70 +61,6 @@ std::shared_ptr<OSSIA::Protocol> coppa::ow::Device::getProtocol() const
 {
     return nullptr;
 }
-
-/*
-OSSIA::Node *createNodeFromPath(const coppa::Destination &path, OSSIA::Device* dev)
-{
-    using namespace OSSIA;
-    // Find the relevant node to add in the device
-    OSSIA::Node* node = dev;
-    for(int i = 0; i < path.size(); i++)
-    {
-        const auto& children = node->children();
-        auto it = boost::range::find_if(
-                    children,
-                    [&] (const auto& ossia_node) { return ossia_node->getName() == path[i].toStdString(); });
-
-        if(it == children.end())
-        {
-            // We have to start adding sub-nodes from here.
-            OSSIA::Node* parentnode = node;
-            for(int k = i; k < path.size(); k++)
-            {
-                auto newNodeIt = parentnode->emplace(parentnode->children().begin(), path[k].toStdString());
-
-                if(k == path.size() - 1)
-                {
-                    node = newNodeIt->get();
-                }
-                else
-                {
-                    parentnode = newNodeIt->get();
-                }
-            }
-
-            break;
-        }
-        else
-        {
-            node = it->get();
-        }
-    }
-
-    return node;
-}
-
-
-OSSIA::Node* findNodeFromPath(const QStringList& path, OSSIA::Device* dev)
-{
-    using namespace OSSIA;
-    // Find the relevant node to add in the device
-    OSSIA::Node* node = dev;
-    for(int i = 0; i < path.size(); i++)
-    {
-        const auto& children = node->children();
-        auto it = boost::range::find_if(children,
-                                        [&] (const auto& ossia_node)
-        { return ossia_node->getName() == path[i].toStdString(); });
-        if(it != children.end())
-            node = it->get();
-        else
-            return nullptr;
-    }
-
-    return node;
-}
-*/
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -195,9 +133,6 @@ bool coppa::ow::Device::updateNamespace()
     children().push_back(rootnode);
     make_tree_rec(*rootnode.get(), m_proto->dev());
 
-
-
-
     return true;
 }
 
@@ -209,5 +144,13 @@ std::shared_ptr<OSSIA::Device> OSSIA::Device::create(
     {
         return std::make_shared<coppa::ow::Device>(clt);
     }
+    return {};
+}
+
+OSSIA::Container<OSSIA::Node>::iterator coppa::ow::Device::insert(
+        OSSIA::Container<OSSIA::Node>::const_iterator,
+        std::shared_ptr<OSSIA::Node>,
+        std::string)
+{
     return {};
 }

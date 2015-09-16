@@ -1,29 +1,23 @@
 #pragma once
 #include <DeviceExplorer/Protocol/DeviceInterface.hpp>
 
-namespace coppa
-{
-namespace oscquery
-{
-class RemoteDevice;
-}
-}
-
-class OSCQueryDevice : public DeviceInterface
+#include "OSCQuerySpecificSettings.hpp"
+#include "i-score/base/plugins/iscore-plugin-ossia/Protocols/OSSIADevice.hpp"
+#include "ossia_wrapper/src/coppaDevice.hpp"
+#include "ossia_wrapper/src/coppaProtocol.hpp"
+class OSCQueryDevice : public OSSIADevice
 {
     public:
-        OSCQueryDevice(const DeviceSettings& settings);
+        OSCQueryDevice(const iscore::DeviceSettings& settings):
+            OSSIADevice{settings}
+        {
+            using namespace OSSIA;
+
+            auto proto = std::make_shared<coppa::ow::OSCQueryClient>(
+                        settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>().host.toStdString());
+            m_dev = std::make_shared<coppa::ow::Device>(proto);
+        }
+
+        void updateSettings(const iscore::DeviceSettings&) override;
         bool canRefresh() const override;
-        Node refresh() override;
-
-        void addAddress(const FullAddressSettings& settings) override;
-        void updateAddress(const FullAddressSettings& address) override;
-        void removeAddress(const QString& path) override;
-
-        void sendMessage(Message& mess) override;
-        bool check(const QString& str) override;
-
-    private:
-        coppa::oscquery::RemoteDevice* m_dev{};
-
 };

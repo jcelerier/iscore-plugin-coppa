@@ -17,11 +17,12 @@ class iscore_plugin_coppa:
 
     public:
         iscore_plugin_coppa();
-        virtual ~iscore_plugin_coppa();
+        ~iscore_plugin_coppa();
 
-        virtual iscore::PluginControlInterface* control() override;
+        iscore::PluginControlInterface* make_control(iscore::Presenter* parent) override;
 
         // Contains the OSCQuery factory
         QVector<iscore::FactoryInterface*> factories(const QString& factoryName) override;
+
 };
 

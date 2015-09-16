@@ -27,6 +27,7 @@ class Node : public OSSIA::Node, public std::enable_shared_from_this<coppa::ow::
         std::string m_name;
 
     public:
+        const std::string& destination() const { return m_fullDestination; }
         Node(std::shared_ptr<coppa::ow::Device> dev,
              std::shared_ptr<coppa::ow::Node> parent,
              std::string dest);
@@ -39,7 +40,7 @@ class Node : public OSSIA::Node, public std::enable_shared_from_this<coppa::ow::
 
         OSSIA::Node& setName(std::string) override;
 
-        const std::shared_ptr<OSSIA::Address>& getAddress() const override;
+        std::shared_ptr<OSSIA::Address> getAddress() const override;
 
         std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type) override;
 
@@ -47,6 +48,11 @@ class Node : public OSSIA::Node, public std::enable_shared_from_this<coppa::ow::
 
         OSSIA::Container<OSSIA::Node>::iterator emplace(
                 OSSIA::Container<OSSIA::Node>::const_iterator,
+                std::string) override;
+
+        OSSIA::Container<OSSIA::Node>::iterator insert(
+                OSSIA::Container<OSSIA::Node>::const_iterator,
+                std::shared_ptr<OSSIA::Node>,
                 std::string) override;
 };
 }

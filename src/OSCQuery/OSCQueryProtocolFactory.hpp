@@ -4,13 +4,13 @@
 #include "OSCQueryDevice.hpp"
 #include "OSCQueryProtocolSettingsWidget.hpp"
 
-class OSCQueryProtocolFactory : public ProtocolFactoryInterface
+class OSCQueryProtocolFactory : public ProtocolFactory
 {
         // Implement with OSSIA::Device
         QString name() const override
         { return "OSCQuery"; }
 
-        DeviceInterface* makeDevice(const DeviceSettings& settings) override
+        DeviceInterface* makeDevice(const iscore::DeviceSettings& settings) override
         {
             return new OSCQueryDevice{settings};
         }
@@ -28,5 +28,12 @@ class OSCQueryProtocolFactory : public ProtocolFactoryInterface
         void serializeProtocolSpecificSettings(const QVariant& data, const VisitorVariant& visitor) const override
         {
             serializeProtocolSpecificSettings_T<OSCQuerySpecificSettings>(data, visitor);
+        }
+
+        // ProtocolFactory interface
+    public:
+        bool checkCompatibility(const iscore::DeviceSettings& a, const iscore::DeviceSettings& b) const override
+        {
+            return true;
         }
 };

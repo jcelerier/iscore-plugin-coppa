@@ -3,6 +3,5 @@
 class coppaControl : public iscore::PluginControlInterface
 {
     public:
-        coppaControl(QObject* parent);
-
+        coppaControl(iscore::Presenter* pres, QObject* parent);
 };

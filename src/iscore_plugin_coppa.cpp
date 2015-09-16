@@ -14,13 +14,6 @@ iscore_plugin_coppa::~iscore_plugin_coppa()
 
 }
 
-iscore::PluginControlInterface* iscore_plugin_coppa::control()
-{
-    return new coppaControl{nullptr};
-}
-
-
-
 QVector<iscore::FactoryInterface*> iscore_plugin_coppa::factories(const QString& factoryName)
 {
     if(factoryName == "Protocol")
@@ -29,4 +22,10 @@ QVector<iscore::FactoryInterface*> iscore_plugin_coppa::factories(const QString&
     }
 
     return {};
+}
+
+
+iscore::PluginControlInterface*iscore_plugin_coppa::make_control(iscore::Presenter* parent)
+{
+    return new coppaControl{parent, parent};
 }
