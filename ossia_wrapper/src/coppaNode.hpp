@@ -17,8 +17,11 @@ namespace ow // ossia wrapper
 class Protocol;
 class Address;
 class Device;
-class Node : public OSSIA::Node, public std::enable_shared_from_this<coppa::ow::Node>
+class Node :
+        public virtual OSSIA::Node,
+        public std::enable_shared_from_this<coppa::ow::Node>
 {
+    protected:
         std::shared_ptr<OSSIA::Address> m_address;
         std::shared_ptr<coppa::ow::Device> m_device;
         std::shared_ptr<OSSIA::Node> m_parent;
@@ -28,10 +31,17 @@ class Node : public OSSIA::Node, public std::enable_shared_from_this<coppa::ow::
 
     public:
         const std::string& destination() const { return m_fullDestination; }
-        Node(std::shared_ptr<coppa::ow::Device> dev,
-             std::shared_ptr<coppa::ow::Node> parent,
+        Node():
+            m_fullDestination{"/"}
+        {
+            // m_name should be device name
+        }
+
+        Node(std::shared_ptr<coppa::ow::Node> parent,
              std::string dest);
 
+        void setDevice(std::shared_ptr<coppa::ow::Device> dev)
+        { m_device = dev; }
         std::shared_ptr<OSSIA::Device> getDevice() const override;
 
         std::shared_ptr<OSSIA::Node> getParent() const override;

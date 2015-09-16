@@ -19,14 +19,14 @@ const std::shared_ptr<OSSIA::Node> coppa::ow::Address::getNode() const
     return m_parent;
 }
 
-const OSSIA::Value*coppa::ow::Address::pullValue()
+const OSSIA::Value* coppa::ow::Address::pullValue()
 {
-    return nullptr;
+    return getValue();
 }
 
 OSSIA::Address&coppa::ow::Address::pushValue(const OSSIA::Value* v)
 {
-    return *this;
+    return setValue(v);
 }
 
 OSSIA::Value* coppaToOSSIAValue(coppa::Variant val)

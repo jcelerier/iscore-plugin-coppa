@@ -65,19 +65,24 @@ std::shared_ptr<OSSIA::Protocol> coppa::ow::Device::getProtocol() const
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/range/algorithm/find_if.hpp>
-void make_tree_rec(
-        coppa::ow::Node& root,
+
+void coppa::ow::Device::make_tree_rec(
         const coppa::oscquery::remote_device& remote_dev)
 {
+    auto dev_ptr = std::dynamic_pointer_cast<coppa::ow::Device>(shared_from_this());
+
     // Print the real parameters in the tree
     for(const auto& elt : remote_dev.safeMap().unsafeMap())
     {
-        coppa::ow::Node* node = &root;
+        coppa::ow::Node* node = this;
         // Go to the furthest known point in the node hierarchy
         const auto& addr = elt.destination;
+        if(addr == "/")
+            continue;
 
         std::vector<std::string> path;
         boost::split(path, addr, boost::lambda::_1 == '/');
+        path.erase(path.begin());
 
         for(int i = 0; i < path.size(); i++)
         {
@@ -92,10 +97,21 @@ void make_tree_rec(
                 coppa::ow::Node* parentnode = node;
                 for(int k = i; k < path.size(); k++)
                 {
+                    std::string new_addr;
+                    for(int str_idx = 0; str_idx <= k; str_idx++)
+                    {
+                        new_addr += "/" + path[str_idx];
+                    }
+
                     auto n = std::make_shared<coppa::ow::Node>(
-                                 std::dynamic_pointer_cast<coppa::ow::Device>(root.getDevice()),
                                  parentnode->shared_from_this(),
-                                 addr);
+                                 new_addr);
+
+                    n->setDevice(dev_ptr);
+
+                    // We create addresses only if it actually exists.
+                    if(remote_dev.safeMap().has(new_addr))
+                        n->createAddress({});
 
                     parentnode->children().push_back(n);
 
@@ -113,7 +129,7 @@ void make_tree_rec(
             }
             else
             {
-                node = static_cast<coppa::ow::Node*>(it->get());
+                node = dynamic_cast<coppa::ow::Node*>(it->get());
             }
         }
     }
@@ -122,16 +138,10 @@ void make_tree_rec(
 bool coppa::ow::Device::updateNamespace()
 {
     m_proto->dev().queryNamespace();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     m_children.clear();
 
-    // Note : shared_from_this of Device ?
-    auto rootnode = std::make_shared<coppa::ow::Node>(
-                                     shared_from_this(),
-                                     nullptr,
-                                     ""); // Root node.
-
-    children().push_back(rootnode);
-    make_tree_rec(*rootnode.get(), m_proto->dev());
+    make_tree_rec(m_proto->dev());
 
     return true;
 }

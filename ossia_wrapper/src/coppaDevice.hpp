@@ -3,7 +3,7 @@
 #include <Network/Protocol.h>
 #include <Editor/Value.h>
 #include <Editor/Domain.h>
-
+#include "coppaNode.hpp"
 namespace coppa
 {
 namespace oscquery
@@ -14,7 +14,9 @@ namespace ow // ossia wrapper
 {
 class Protocol;
 class OSCQueryClient;
-class Device : public OSSIA::Device, public std::enable_shared_from_this<coppa::ow::Device>
+class Device :
+        public OSSIA::Device,
+        public coppa::ow::Node
 {
         std::shared_ptr<coppa::ow::OSCQueryClient> m_proto;
 
@@ -45,6 +47,10 @@ class Device : public OSSIA::Device, public std::enable_shared_from_this<coppa::
 
         std::shared_ptr<OSSIA::Protocol> getProtocol() const override;
         bool updateNamespace() override;
+
+    private:
+        void make_tree_rec(
+                const coppa::oscquery::remote_device& remote_dev);
 };
 
 }
