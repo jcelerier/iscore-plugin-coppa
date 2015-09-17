@@ -137,6 +137,9 @@ void coppa::ow::Device::make_tree_rec(
 
 bool coppa::ow::Device::updateNamespace()
 {
+    if(!m_proto->dev().queryConnected())
+        return false;
+
     atomic_update_wrapper(
                 [&] () { m_proto->dev().queryNamespace(); },
                 m_proto->dev().onUpdate);
