@@ -137,11 +137,14 @@ void coppa::ow::Device::make_tree_rec(
 
 bool coppa::ow::Device::updateNamespace()
 {
-    m_proto->dev().queryNamespace();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    m_children.clear();
+    atomic_update_wrapper(
+                [&] () { m_proto->dev().queryNamespace(); },
+                m_proto->dev().onUpdate);
 
+    m_children.clear();
     make_tree_rec(m_proto->dev());
+
+    m_proto->dev().onUpdate = nullptr;
 
     return true;
 }

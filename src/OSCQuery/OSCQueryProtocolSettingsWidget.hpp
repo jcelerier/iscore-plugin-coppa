@@ -5,6 +5,7 @@ class QSpinBox;
 
 #include <DeviceExplorer/Protocol/ProtocolSettingsWidget.hpp>
 
+class ZeroconfBrowser;
 class OSCQueryProtocolSettingsWidget : public ProtocolSettingsWidget
 {
     public:
@@ -19,9 +20,13 @@ class OSCQueryProtocolSettingsWidget : public ProtocolSettingsWidget
 
         void setDefaults();
 
-    protected:
-        QLineEdit* m_deviceNameEdit;
-        QLineEdit* m_localHostEdit;
+    private:
+        void on_sessionSelected(const QString& host, int port);
 
+        ZeroconfBrowser* m_zeroconfBrowser{};
+        QAction* m_browserAct{};
+
+        QLineEdit* m_deviceNameEdit{};
+        QLineEdit* m_localHostEdit{};
 };
 

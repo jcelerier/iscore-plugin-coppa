@@ -21,9 +21,9 @@ OSCQueryDevice::OSCQueryDevice(const iscore::DeviceSettings& settings):
     auto proto = std::make_shared<coppa::ow::OSCQueryClient>(
                 settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>().host.toStdString());
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    coppa::ow::atomic_connect_wrapper(proto->dev());
+
     m_dev = std::make_shared<coppa::ow::Device>(proto);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void OSCQueryDevice::updateSettings(const iscore::DeviceSettings&)

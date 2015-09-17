@@ -14,9 +14,8 @@ cmake_policy(SET CMP0020 NEW)
 cmake_policy(SET CMP0042 NEW)
 
 # Packages
-find_package(Qt5 5.5 REQUIRED COMPONENTS Core Widgets)
-
-# For coppa it's in set_coppa_properties
+find_package(Qt5 5.5 REQUIRED COMPONENTS Core Widgets Network)
+find_package(KF5DNSSD NO_MODULE)
 
 # i-score API
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/i-score-build")
@@ -40,8 +39,9 @@ target_include_directories(APICoppa PUBLIC "${API_HEADERS_FOLDER}")
 add_library(${PROJECT_NAME} SHARED ${SRCS} ${HDRS})
 
 target_link_libraries(${PROJECT_NAME}
-                        Qt5::Core Qt5::Widgets
-                        iscore_lib_base iscore_plugin_deviceexplorer iscore_plugin_ossia APICoppa)
+                      Qt5::Core Qt5::Widgets
+                      iscore_lib_base iscore_plugin_deviceexplorer iscore_plugin_ossia iscore_plugin_network
+                      APICoppa KF5DNSSD)
 
 install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION plugins/
