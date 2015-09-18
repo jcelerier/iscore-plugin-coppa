@@ -31,7 +31,7 @@ bool atomic_connect_wrapper(const DeviceToCheck& dev, bool& b) // b is for conne
     std::chrono::milliseconds to(3000);
     static const std::chrono::milliseconds frame(10);
 
-    while(!dev.queryConnected())
+    while(!dev.query_is_connected())
     {
         if(to < std::chrono::milliseconds(0) || !b)
         {

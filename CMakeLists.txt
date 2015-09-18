@@ -13,6 +13,8 @@ set(CMAKE_AUTOUIC ON)
 cmake_policy(SET CMP0020 NEW)
 cmake_policy(SET CMP0042 NEW)
 
+set(ISCORE_USE_DEV_PLUGINS True)
+
 # Packages
 find_package(Qt5 5.5 REQUIRED COMPONENTS Core Widgets Network)
 find_package(KF5DNSSD NO_MODULE)

@@ -71,8 +71,9 @@ void coppa::ow::Device::make_tree_rec(
 {
     auto dev_ptr = std::dynamic_pointer_cast<coppa::ow::Device>(shared_from_this());
 
+    // TODO LOCKME
     // Print the real parameters in the tree
-    for(const auto& elt : remote_dev.safeMap().unsafeMap())
+    for(const auto& elt : remote_dev.data_map())
     {
         coppa::ow::Node* node = this;
         // Go to the furthest known point in the node hierarchy
@@ -110,7 +111,7 @@ void coppa::ow::Device::make_tree_rec(
                     n->setDevice(dev_ptr);
 
                     // We create addresses only if it actually exists.
-                    if(remote_dev.safeMap().has(new_addr))
+                    if(remote_dev.has(new_addr))
                         n->createAddress({});
 
                     parentnode->children().push_back(n);
@@ -137,11 +138,11 @@ void coppa::ow::Device::make_tree_rec(
 
 bool coppa::ow::Device::updateNamespace()
 {
-    if(!m_proto->dev().queryConnected())
+    if(!m_proto->dev().query_is_connected())
         return false;
 
     atomic_update_wrapper(
-                [&] () { m_proto->dev().queryNamespace(); },
+                [&] () { m_proto->dev().query_request_namespace(); },
                 m_proto->dev().onUpdate);
 
     m_children.clear();

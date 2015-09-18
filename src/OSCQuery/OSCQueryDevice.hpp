@@ -7,6 +7,7 @@ class OSCQueryDevice : public OSSIADevice
         std::thread m_serverThread;
     public:
         OSCQueryDevice(const iscore::DeviceSettings& settings);
+        ~OSCQueryDevice();
 
         void updateSettings(const iscore::DeviceSettings&) override;
         bool canRefresh() const override;

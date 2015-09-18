@@ -5,7 +5,7 @@
 
 auto parameter(const std::shared_ptr<coppa::ow::Node>& node)
 {
-    return static_cast<coppa::ow::Device*>(node->getDevice().get())->dev().safeMap().get(node->destination());
+    return static_cast<coppa::ow::Device*>(node->getDevice().get())->dev().get(node->destination());
 }
 
 coppa::ow::Address::Address(std::shared_ptr<coppa::ow::Node> parent):
@@ -57,7 +57,7 @@ OSSIA::Value* coppaToOSSIAValue(coppa::Variant val)
 
 const OSSIA::Value* coppa::ow::Address::getValue() const
 {
-    coppa::oscquery::Parameter p = static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().safeMap().get(m_parent->destination());
+    coppa::oscquery::Parameter p = static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().get(m_parent->destination());
 
     if(p.values.size() == 0)
     {

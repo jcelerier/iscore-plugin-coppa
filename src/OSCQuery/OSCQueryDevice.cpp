@@ -15,14 +15,14 @@ bool OSCQueryDevice::canRefresh() const
 iscore::Node OSCQueryDevice::refresh()
 {
     auto dev = static_cast<coppa::ow::Device*>(m_dev.get());
-    if(!dev->dev().queryConnected())
+    if(!dev->dev().query_is_connected())
     {
         bool b = true;
         if(m_serverThread.joinable())
             m_serverThread.join();
 
         m_serverThread = std::thread([&] {
-            dev->dev().queryConnect();
+            dev->dev().query_connect();
             b = false;
         });
 
@@ -43,7 +43,7 @@ OSCQueryDevice::OSCQueryDevice(const iscore::DeviceSettings& settings):
 
     bool b = true;
     m_serverThread = std::thread([&] {
-        proto->dev().queryConnect();
+        proto->dev().query_connect();
         b = false;
     });
 
@@ -57,4 +57,15 @@ OSCQueryDevice::OSCQueryDevice(const iscore::DeviceSettings& settings):
 
 void OSCQueryDevice::updateSettings(const iscore::DeviceSettings&)
 {
+}
+
+OSCQueryDevice::~OSCQueryDevice()
+{
+
+  auto dev = static_cast<coppa::ow::Device*>(m_dev.get());
+  if(dev->dev().query_is_connected())
+    dev->dev().query_close();
+
+  if(m_serverThread.joinable())
+    m_serverThread.join();
 }
