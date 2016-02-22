@@ -64,6 +64,18 @@ class Node :
                 OSSIA::Container<OSSIA::Node>::const_iterator,
                 std::shared_ptr<OSSIA::Node>,
                 std::string) override;
+
+        OSSIA::Container<OSSIA::Node>::iterator emplace(
+                OSSIA::Container<OSSIA::Node>::const_iterator,
+                const std::string&,
+                OSSIA::Value::Type,
+                OSSIA::AccessMode = {},
+                const std::shared_ptr<OSSIA::Domain>& = {},
+                OSSIA::BoundingMode = {},
+                bool repetitionFilter = {}) override;
+
+        OSSIA::Container<OSSIA::Node>::iterator erase(
+                OSSIA::Container<OSSIA::Node>::const_iterator) override;
 };
 }
 }

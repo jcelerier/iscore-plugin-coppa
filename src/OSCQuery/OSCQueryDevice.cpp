@@ -7,12 +7,7 @@
 #include "ossia_wrapper/src/coppaProtocol.hpp"
 #include "OSCQuerySpecificSettings.hpp"
 
-bool OSCQueryDevice::canRefresh() const
-{
-    return true;
-}
-
-iscore::Node OSCQueryDevice::refresh()
+Device::Node OSCQueryDevice::refresh()
 {
     auto dev = static_cast<coppa::ow::Device*>(m_dev.get());
     if(!dev->dev().query_is_connected())
@@ -32,12 +27,18 @@ iscore::Node OSCQueryDevice::refresh()
     return OSSIADevice::refresh();
 }
 
+bool OSCQueryDevice::reconnect()
+{
+    return true;
+}
 
-OSCQueryDevice::OSCQueryDevice(const iscore::DeviceSettings& settings):
+
+OSCQueryDevice::OSCQueryDevice(const Device::DeviceSettings& settings):
     OSSIADevice{settings}
 {
     using namespace OSSIA;
 
+    m_capas.canRefresh = true;
     auto proto = std::make_shared<coppa::ow::OSCQueryClient>(
                 settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>().host.toStdString());
 
@@ -55,9 +56,6 @@ OSCQueryDevice::OSCQueryDevice(const iscore::DeviceSettings& settings):
     m_dev = std::make_shared<coppa::ow::Device>(proto);
 }
 
-void OSCQueryDevice::updateSettings(const iscore::DeviceSettings&)
-{
-}
 
 OSCQueryDevice::~OSCQueryDevice()
 {

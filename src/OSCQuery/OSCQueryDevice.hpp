@@ -1,16 +1,14 @@
 #pragma once
-#include "i-score/base/plugins/iscore-plugin-ossia/Protocols/OSSIADevice.hpp"
+#include <OSSIA/Protocols/OSSIADevice.hpp>
 #include <thread>
-class OSCQueryDevice : public OSSIADevice
+class OSCQueryDevice : public Ossia::OSSIADevice
 {
     private:
         std::thread m_serverThread;
     public:
-        OSCQueryDevice(const iscore::DeviceSettings& settings);
+        OSCQueryDevice(const Device::DeviceSettings& settings);
         ~OSCQueryDevice();
 
-        void updateSettings(const iscore::DeviceSettings&) override;
-        bool canRefresh() const override;
-
-        iscore::Node refresh() override;
+        Device::Node refresh() override;
+        bool reconnect() override;
 };

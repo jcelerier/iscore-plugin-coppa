@@ -73,7 +73,7 @@ void coppa::ow::Device::make_tree_rec(
 
     // TODO LOCKME
     // Print the real parameters in the tree
-    for(const auto& elt : remote_dev.data_map())
+    for(const auto& elt : remote_dev.map().get_data_map())
     {
         coppa::ow::Node* node = this;
         // Go to the furthest known point in the node hierarchy
@@ -103,7 +103,12 @@ void coppa::ow::Device::make_tree_rec(
                     {
                         new_addr += "/" + path[str_idx];
                     }
-
+                    auto new_node_it = parentnode->emplace(parentnode->children().end(), new_addr);
+                    auto n = dynamic_cast<coppa::ow::Node*>(new_node_it->get());
+                    n->setDevice(dev_ptr);
+                    if(remote_dev.map().has(new_addr))
+                        n->createAddress({});
+/*
                     auto n = std::make_shared<coppa::ow::Node>(
                                  parentnode->shared_from_this(),
                                  new_addr);
@@ -115,14 +120,14 @@ void coppa::ow::Device::make_tree_rec(
                         n->createAddress({});
 
                     parentnode->children().push_back(n);
-
+*/
                     if(k == path.size() - 1)
                     {
-                        node = n.get();
+                        node = n;
                     }
                     else
                     {
-                        parentnode = n.get();
+                        parentnode = n;
                     }
                 }
 

@@ -3,17 +3,17 @@
 class QLineEdit;
 class QSpinBox;
 
-#include <DeviceExplorer/Protocol/ProtocolSettingsWidget.hpp>
+#include <Device/Protocol/ProtocolSettingsWidget.hpp>
 
 class ZeroconfBrowser;
-class OSCQueryProtocolSettingsWidget : public ProtocolSettingsWidget
+class OSCQueryProtocolSettingsWidget : public Device::ProtocolSettingsWidget
 {
     public:
         OSCQueryProtocolSettingsWidget(QWidget* parent = nullptr);
 
-        virtual iscore::DeviceSettings getSettings() const override;
+        virtual Device::DeviceSettings getSettings() const override;
 
-        virtual void setSettings(const iscore::DeviceSettings& settings) override;
+        virtual void setSettings(const Device::DeviceSettings& settings) override;
 
     protected:
         void buildGUI();

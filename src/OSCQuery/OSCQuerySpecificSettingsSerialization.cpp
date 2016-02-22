@@ -4,7 +4,7 @@
 
 
 template<>
-void Visitor<Reader<DataStream>>::readFrom(const OSCQuerySpecificSettings& n)
+void Visitor<Reader<DataStream>>::readFrom_impl(const OSCQuerySpecificSettings& n)
 {
     m_stream << n.host;
     insertDelimiter();
@@ -18,7 +18,7 @@ void Visitor<Writer<DataStream>>::writeTo(OSCQuerySpecificSettings& n)
 }
 
 template<>
-void Visitor<Reader<JSONObject>>::readFrom(const OSCQuerySpecificSettings& n)
+void Visitor<Reader<JSONObject>>::readFrom_impl(const OSCQuerySpecificSettings& n)
 {
     m_obj["Host"] = n.host;
 }

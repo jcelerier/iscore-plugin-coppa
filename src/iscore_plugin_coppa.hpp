@@ -1,17 +1,16 @@
 #pragma once
 #include <QObject>
-#include <iscore/plugins/qt_interfaces/PluginControlInterface_QtInterface.hpp>
+#include <iscore/plugins/qt_interfaces/PluginRequirements_QtInterface.hpp>
 #include <iscore/plugins/qt_interfaces/FactoryInterface_QtInterface.hpp>
 
 class iscore_plugin_coppa:
     public QObject,
-    public iscore::PluginControlInterface_QtInterface,
+        public iscore::Plugin_QtInterface,
     public iscore::FactoryInterface_QtInterface
 {
         Q_OBJECT
-        Q_PLUGIN_METADATA(IID PluginControlInterface_QtInterface_iid)
         Q_INTERFACES(
-            iscore::PluginControlInterface_QtInterface
+                iscore::Plugin_QtInterface
             iscore::FactoryInterface_QtInterface
         )
 
@@ -19,10 +18,11 @@ class iscore_plugin_coppa:
         iscore_plugin_coppa();
         ~iscore_plugin_coppa();
 
-        iscore::PluginControlInterface* make_control(iscore::Presenter* parent) override;
+        std::vector<std::unique_ptr<iscore::FactoryInterfaceBase>> factories(
+                const iscore::ApplicationContext& ctx,
+                const iscore::AbstractFactoryKey& factoryName) const override;
 
-        // Contains the OSCQuery factory
-        QVector<iscore::FactoryInterface*> factories(const QString& factoryName) override;
-
+        iscore::Version version() const override;
+        UuidKey<iscore::Plugin> key() const override;
 };
 

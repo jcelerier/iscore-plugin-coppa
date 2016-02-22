@@ -7,15 +7,21 @@
 #include <QPushButton>
 #include <QApplication>
 #include <QAction>
-#include <i-score/base/plugins/iscore-plugin-network/Zeroconf/ZeroconfBrowser.hpp>
-OSCQueryProtocolSettingsWidget::OSCQueryProtocolSettingsWidget(QWidget* parent)
+
+#ifdef USE_ZEROCONF
+#include <Zeroconf/ZeroconfBrowser.hpp>
+#endif
+OSCQueryProtocolSettingsWidget::OSCQueryProtocolSettingsWidget(
+        QWidget* parent)
     : ProtocolSettingsWidget(parent)
 {
+
+#ifdef USE_ZEROCONF
     m_zeroconfBrowser = new ZeroconfBrowser{"_coppa._tcp", qApp->activeWindow()};
     connect(m_zeroconfBrowser, &ZeroconfBrowser::sessionSelected,
             this, &OSCQueryProtocolSettingsWidget::on_sessionSelected);
     m_browserAct = m_zeroconfBrowser->makeAction();
-
+#endif
     buildGUI();
 }
 
@@ -31,9 +37,11 @@ OSCQueryProtocolSettingsWidget::buildGUI()
 
     QPushButton* browseButton = new QPushButton(tr("Browse"));
 
-    connect(browseButton, &QPushButton::clicked, m_browserAct, [=] () { m_browserAct->trigger(); });
-
     QGridLayout* gLayout = new QGridLayout;
+
+#ifdef USE_ZEROCONF
+    connect(browseButton, &QPushButton::clicked, m_browserAct, [=] () { m_browserAct->trigger(); });
+#endif
 
     gLayout->addWidget(deviceNameLabel, 0, 0, 1, 1);
     gLayout->addWidget(m_deviceNameEdit, 0, 1, 1, 1);
@@ -69,11 +77,11 @@ void OSCQueryProtocolSettingsWidget::on_sessionSelected(
 }
 
 #include "OSCQuerySpecificSettings.hpp"
-iscore::DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
+Device::DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
 {
     Q_ASSERT(m_deviceNameEdit);
 
-    iscore::DeviceSettings s;
+    Device::DeviceSettings s;
     s.name = m_deviceNameEdit->text();
 
     OSCQuerySpecificSettings specificsettings;
@@ -84,7 +92,7 @@ iscore::DeviceSettings OSCQueryProtocolSettingsWidget::getSettings() const
 }
 
 void
-OSCQueryProtocolSettingsWidget::setSettings(const iscore::DeviceSettings &settings)
+OSCQueryProtocolSettingsWidget::setSettings(const Device::DeviceSettings &settings)
 {
     m_deviceNameEdit->setText(settings.name);
     OSCQuerySpecificSettings specificsettings;

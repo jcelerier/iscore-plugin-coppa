@@ -2,7 +2,7 @@
 
 coppa::ow::OSCQueryClient::OSCQueryClient(std::string addr):
     OSSIA::OSCQueryClient{},
-    m_dev{addr}
+    m_dev{m_setter, addr}
 {
 
 }

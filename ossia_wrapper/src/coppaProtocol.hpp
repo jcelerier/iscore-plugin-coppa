@@ -71,7 +71,18 @@ void atomic_update_wrapper(Fun f, CallbackToCheck& c)
 
 class OSCQueryClient: public OSSIA::OSCQueryClient
 {
-        coppa::oscquery::remote_device m_dev;
+        basic_map<oscquery::ParameterMap>
+          m_base_map;
+
+        locked_map<basic_map<oscquery::ParameterMap>>
+          m_locked_map{m_base_map};
+
+        remote_map_setter<
+            locked_map<basic_map<oscquery::ParameterMap>>,
+            osc::sender>
+          m_setter{m_locked_map};
+
+        oscquery::remote_device m_dev;
     public:
         OSCQueryClient(std::string addr);
 

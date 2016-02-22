@@ -2,10 +2,16 @@
 #include "coppaNode.hpp"
 #include "coppaDevice.hpp"
 #include <coppa/oscquery/device/remote.hpp>
+#include <coppa/oscquery/parameter.hpp>
 
 auto parameter(const std::shared_ptr<coppa::ow::Node>& node)
 {
-    return static_cast<coppa::ow::Device*>(node->getDevice().get())->dev().get(node->destination());
+    return static_cast<coppa::ow::Device*>(node->getDevice().get())->dev().map().get(node->destination());
+}
+
+coppa::oscquery::remote_device&coppa::ow::Address::dev() const
+{
+    return static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev();
 }
 
 coppa::ow::Address::Address(std::shared_ptr<coppa::ow::Node> parent):
@@ -29,7 +35,7 @@ OSSIA::Address&coppa::ow::Address::pushValue(const OSSIA::Value* v)
     return setValue(v);
 }
 
-OSSIA::Value* coppaToOSSIAValue(coppa::Variant val)
+OSSIA::Value* coppaToOSSIAValue(coppa::oscquery::Variant val)
 {
     using namespace eggs::variants;
     switch(val.which())
@@ -57,7 +63,7 @@ OSSIA::Value* coppaToOSSIAValue(coppa::Variant val)
 
 const OSSIA::Value* coppa::ow::Address::getValue() const
 {
-    coppa::oscquery::Parameter p = static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().get(m_parent->destination());
+    coppa::oscquery::Parameter p = dev().map().get(m_parent->destination());
 
     if(p.values.size() == 0)
     {
@@ -84,7 +90,7 @@ OSSIA::Address&coppa::ow::Address::setValue(
     if(!v)
         return *this;
 
-    coppa::oscquery::Parameter p = static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().get(m_parent->destination());
+    coppa::oscquery::Parameter p = dev().map().get(m_parent->destination());
     p.values.clear();
     switch(v->getType())
     {
@@ -104,7 +110,7 @@ OSSIA::Address&coppa::ow::Address::setValue(
             break;
     }
 
-    static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().set(p.destination, p);
+    dev().setter().set(p.destination, p);
 
     return *this;
 }
@@ -118,29 +124,29 @@ OSSIA::Value::Type coppa::ow::Address::getValueType() const
         throw;
 }
 
-OSSIA::Address::AccessMode coppa::ow::Address::getAccessMode() const
+OSSIA::AccessMode coppa::ow::Address::getAccessMode() const
 {
-    coppa::oscquery::Parameter p = static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().get(m_parent->destination());
-    switch(p.accessmode)
+    coppa::oscquery::Parameter p = dev().map().get(m_parent->destination());
+    switch(p.access)
     {
         case coppa::Access::Mode::None:
-            return AccessMode::BI;
+            return OSSIA::AccessMode::BI;
             break;
         case coppa::Access::Mode::Get:
-            return AccessMode::BI;
+            return OSSIA::AccessMode::GET;
             break;
         case coppa::Access::Mode::Set:
-            return AccessMode::BI;
+            return OSSIA::AccessMode::SET;
             break;
         case coppa::Access::Mode::Both:
-            return AccessMode::BI;
+            return OSSIA::AccessMode::BI;
     }
 
     return {};
 
 }
 
-OSSIA::Address&coppa::ow::Address::setAccessMode(OSSIA::Address::AccessMode)
+OSSIA::Address& coppa::ow::Address::setAccessMode(OSSIA::AccessMode)
 {
     return *this;
 }
@@ -155,6 +161,8 @@ class coppaDomain : public OSSIA::Domain
         {
 
         }
+
+        virtual ~coppaDomain();
 
         std::shared_ptr<OSSIA::Domain> clone() const override
         {
@@ -186,9 +194,14 @@ class coppaDomain : public OSSIA::Domain
         }
 };
 
+coppaDomain::~coppaDomain()
+{
+
+}
+
 const std::shared_ptr<OSSIA::Domain>& coppa::ow::Address::getDomain() const
 {
-    coppa::oscquery::Parameter p = static_cast<coppa::ow::Device*>(m_parent->getDevice().get())->dev().get(m_parent->destination());
+    coppa::oscquery::Parameter p = dev().map().get(m_parent->destination());
 
     if(p.ranges.size() > 0)
     {
@@ -208,12 +221,12 @@ OSSIA::Address&coppa::ow::Address::setDomain(std::shared_ptr<OSSIA::Domain>)
     return *this;
 }
 
-OSSIA::Address::BoundingMode coppa::ow::Address::getBoundingMode() const
+OSSIA::BoundingMode coppa::ow::Address::getBoundingMode() const
 {
-    return BoundingMode::FREE;
+    return OSSIA::BoundingMode::FREE;
 }
 
-OSSIA::Address&coppa::ow::Address::setBoundingMode(OSSIA::Address::BoundingMode)
+OSSIA::Address&coppa::ow::Address::setBoundingMode(OSSIA::BoundingMode)
 {
     return *this;
 }
@@ -227,3 +240,4 @@ OSSIA::Address&coppa::ow::Address::setRepetitionFilter(bool)
 {
     return *this;
 }
+
