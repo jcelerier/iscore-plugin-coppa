@@ -15,21 +15,25 @@ namespace coppa
 namespace ow // ossia wrapper
 {
 class Protocol;
+template<typename Node_T>
 class Address;
-class Device;
+
+template<typename Device_T> // coppa::ow::Device
 class Node :
         public virtual OSSIA::Node,
-        public std::enable_shared_from_this<coppa::ow::Node>
+        public std::enable_shared_from_this<coppa::ow::Node<Device_T>>
 {
     protected:
         std::shared_ptr<OSSIA::Address> m_address;
-        std::shared_ptr<coppa::ow::Device> m_device;
+        std::shared_ptr<Device_T> m_device;
         std::shared_ptr<OSSIA::Node> m_parent;
 
         std::string m_fullDestination;
         std::string m_name;
 
     public:
+        using node_type = Node<Device_T>;
+        using device_type = Device_T;
         const std::string& destination() const { return m_fullDestination; }
         Node():
             m_fullDestination{"/"}
@@ -37,33 +41,79 @@ class Node :
             // m_name should be device name
         }
 
-        Node(std::shared_ptr<coppa::ow::Node> parent,
-             std::string dest);
+        virtual ~Node()
+        {
 
-        void setDevice(std::shared_ptr<coppa::ow::Device> dev)
-        { m_device = dev; }
-        std::shared_ptr<OSSIA::Device> getDevice() const override;
+        }
 
-        std::shared_ptr<OSSIA::Node> getParent() const override;
+        Node(std::shared_ptr<Node> parent,
+             std::string dest):
+            m_parent{parent},
+            m_fullDestination{dest}
+        {
+            std::vector<std::string> vec;
+            boost::split(vec, m_fullDestination, boost::lambda::_1 == '/');
 
-        std::string getName() const override;
+            m_name = vec.back();
+        }
 
-        OSSIA::Node& setName(std::string) override;
+        void setDevice(std::shared_ptr<device_type> dev)
+        {
+            m_device = dev;
+        }
 
-        std::shared_ptr<OSSIA::Address> getAddress() const override;
+        std::shared_ptr<OSSIA::Node> getParent() const override
+        {
+            return m_parent;
+        }
 
-        std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type) override;
+        std::shared_ptr<OSSIA::Device> getDevice() const override
+        {
+            return m_device;
+        }
 
-        bool removeAddress() override;
+        std::string getName() const override
+        {
+            return m_name;
+        }
+
+        OSSIA::Node& setName(std::string) override
+        {
+            return *this;
+        }
+
+        std::shared_ptr<OSSIA::Address> getAddress() const override
+        {
+            return m_address;
+        }
+
+        std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type) override
+        {
+            // We don't change the address for now.
+            if(!m_address)
+                m_address = std::make_shared<coppa::ow::Address<node_type>>(this->shared_from_this());
+            return m_address;
+        }
+
+        bool removeAddress() override
+        {
+            return false;
+        }
 
         OSSIA::Container<OSSIA::Node>::iterator emplace(
                 OSSIA::Container<OSSIA::Node>::const_iterator,
-                std::string) override;
+                std::string) override
+        {
+            return {};
+        }
 
         OSSIA::Container<OSSIA::Node>::iterator insert(
                 OSSIA::Container<OSSIA::Node>::const_iterator,
                 std::shared_ptr<OSSIA::Node>,
-                std::string) override;
+                std::string) override
+        {
+            return {};
+        }
 
         OSSIA::Container<OSSIA::Node>::iterator emplace(
                 OSSIA::Container<OSSIA::Node>::const_iterator,
@@ -72,10 +122,16 @@ class Node :
                 OSSIA::AccessMode = {},
                 const std::shared_ptr<OSSIA::Domain>& = {},
                 OSSIA::BoundingMode = {},
-                bool repetitionFilter = {}) override;
+                bool repetitionFilter = {}) override
+        {
+            return {};
+        }
 
         OSSIA::Container<OSSIA::Node>::iterator erase(
-                OSSIA::Container<OSSIA::Node>::const_iterator) override;
+                OSSIA::Container<OSSIA::Node>::const_iterator) override
+        {
+            return {};
+        }
 };
 }
 }

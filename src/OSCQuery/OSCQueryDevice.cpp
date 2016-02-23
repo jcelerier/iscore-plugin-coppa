@@ -3,13 +3,15 @@
 #include "OSCQuerySpecificSettings.hpp"
 
 #include <coppa/oscquery/device/remote.hpp>
-#include "ossia_wrapper/src/coppaDevice.hpp"
-#include "ossia_wrapper/src/coppaProtocol.hpp"
+#include <ossia_wrapper/src/coppaDevice.hpp>
+#include <ossia_wrapper/src/coppaProtocol.hpp>
+#include <ossia_wrapper/src/coppaAddress.hpp>
 #include "OSCQuerySpecificSettings.hpp"
 
+using device_t = coppa::ow::Device<coppa::ow::OSCQueryClient, coppa::oscquery::remote_device>;
 Device::Node OSCQueryDevice::refresh()
 {
-    auto dev = static_cast<coppa::ow::Device*>(m_dev.get());
+    auto dev = static_cast<device_t*>(m_dev.get());
     if(!dev->dev().query_is_connected())
     {
         bool b = true;
@@ -53,16 +55,15 @@ OSCQueryDevice::OSCQueryDevice(const Device::DeviceSettings& settings):
     {
         m_serverThread.join();
     }
-    m_dev = std::make_shared<coppa::ow::Device>(proto);
+    m_dev = std::make_shared<device_t>(proto);
 }
 
 
 OSCQueryDevice::~OSCQueryDevice()
 {
-
-  auto dev = static_cast<coppa::ow::Device*>(m_dev.get());
-  if(dev->dev().query_is_connected())
-    dev->dev().query_close();
+  auto coppa_dev = static_cast<device_t*>(m_dev.get());
+  if(coppa_dev->dev().query_is_connected())
+    coppa_dev->dev().query_close();
 
   if(m_serverThread.joinable())
     m_serverThread.join();

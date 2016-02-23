@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
-project(iscore_addon_coppa)
+project(iscore_addon_coppa LANGUAGES CXX)
 
 iscore_common_setup()
 
@@ -13,7 +13,8 @@ file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 file(GLOB OSSIA_WRAPPER_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/src/*.hpp"
     )
 
 add_library(APICoppa ${OSSIA_WRAPPER_SRCS})
