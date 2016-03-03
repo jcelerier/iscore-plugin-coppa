@@ -12,9 +12,9 @@ find_package(KF5DNSSD NO_MODULE)
 file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-file(GLOB OSSIA_WRAPPER_SRCS
-  "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/src/*.cpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/src/*.hpp"
+file(GLOB_RECURSE OSSIA_WRAPPER_SRCS
+  "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ossia_wrapper/*.hpp"
     )
 
 add_library(APICoppa ${OSSIA_WRAPPER_SRCS})
