@@ -8,11 +8,12 @@
 #include <ossia_wrapper/ossia_wrapper.hpp>
 #include <ossia_wrapper/domain.hpp>
 
+
 namespace coppa
 {
 namespace ossia_wrapper // ossia wrapper
 {
-namespace Minuit
+namespace Local
 {
 template<typename Node_T>
 class Address : public OSSIA::Address
@@ -52,20 +53,12 @@ class Address : public OSSIA::Address
 
     const OSSIA::Value* pullValue() override
     {
-      auto res = dev().pull(m_parent->destination());
-      res.wait();
-      auto param = res.get();
-      return coppaToOSSIAValue(param);
+      return getValue();
     }
 
     OSSIA::Address& pushValue(const OSSIA::Value* v) override
     {
-      if(v)
-      {
-        dev().push(m_parent->destination(), fromTopValue(v));
-      }
-
-      return *this;
+      return setValue(v);
     }
 
     const OSSIA::Value* getValue() const override

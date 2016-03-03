@@ -22,9 +22,11 @@ class OSCQueryClient : public Protocol
 
 namespace coppa
 {
-namespace ow
+namespace ossia_wrapper
 {
 
+namespace OSCQuery
+{
 class OSCQueryClient: public OSSIA::OSCQueryClient
 {
         basic_map<oscquery::ParameterMap>
@@ -40,6 +42,7 @@ class OSCQueryClient: public OSSIA::OSCQueryClient
 
         oscquery::remote_device m_dev;
     public:
+        using protocol_t = oscquery::remote_device;
         OSCQueryClient(std::string addr):
             OSSIA::OSCQueryClient{},
             m_dev{m_setter, addr}
@@ -72,5 +75,6 @@ class OSCQueryClient: public OSSIA::OSCQueryClient
         auto& dev() { return m_dev; }
         const auto& dev() const { return m_dev; }
 };
+}
 }
 }

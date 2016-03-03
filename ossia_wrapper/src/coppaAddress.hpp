@@ -9,12 +9,6 @@
 #include <coppa/oscquery/device/remote.hpp>
 #include <coppa/oscquery/parameter.hpp>
 
-template<typename Node_T>
-auto parameter(const std::shared_ptr<Node_T>& node)
-{
-    return static_cast<typename Node_T::device_type*>(node->getDevice().get())->dev().map().get(node->destination());
-}
-
 
 namespace coppa
 {
@@ -22,8 +16,16 @@ namespace oscquery
 {
 class remote_device;
 }
-namespace ow // ossia wrapper
+namespace ossia_wrapper // ossia wrapper
 {
+namespace OSCQuery
+{
+
+template<typename Node_T>
+auto parameter(const std::shared_ptr<Node_T>& node)
+{
+    return static_cast<typename Node_T::device_type*>(node->getDevice().get())->dev().map().get(node->destination());
+}
 
 inline OSSIA::Value* coppaToOSSIAValue(coppa::oscquery::Variant val)
 {
@@ -274,6 +276,6 @@ class Address : public OSSIA::Address
         }
 };
 
-
+}
 }
 }

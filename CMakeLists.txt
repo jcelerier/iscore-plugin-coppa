@@ -24,7 +24,7 @@ target_include_directories(APICoppa PUBLIC "${API_HEADERS_FOLDER}")
 add_library(${PROJECT_NAME} ${SRCS} ${HDRS})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-                      Qt5::Core Qt5::Widgets
+                      Qt5::Core Qt5::Widgets APIJamoma_Editor
                       iscore_lib_base iscore_plugin_deviceexplorer
                       iscore_plugin_ossia iscore_addon_network
                       coppa APICoppa KF5DNSSD)

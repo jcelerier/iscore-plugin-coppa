@@ -1,14 +1,14 @@
 #pragma once
-#include <Network/Protocol/Minuit.h>
-#include <coppa/minuit/device/minuit_remote_future.hpp>
+#include <Network/Protocol/OSC.h>
+#include <coppa/minuit/device/osc_local_device.hpp>
 namespace coppa
 {
 namespace ossia_wrapper
 {
-
-namespace Minuit
+namespace OSC
 {
-class MinuitClient: public OSSIA::Minuit
+
+class Client: public OSSIA::OSC
 {
     using map_type = ParameterMapType<ossia::Parameter>;
         basic_map<map_type>
@@ -17,20 +17,31 @@ class MinuitClient: public OSSIA::Minuit
         locked_map<basic_map<map_type>>
           m_locked_map{m_base_map};
 
-        ossia::minuit_remote_impl_future m_dev;
+        ossia::osc_local_impl m_dev;
     public:
-        using protocol_t = ossia::minuit_remote_impl_future;
-        MinuitClient(
+        using protocol_t = ossia::osc_local_impl;
+        Client(
             const std::string& addr,
             unsigned int remote_in_p,
             unsigned int local_in_p):
-            OSSIA::Minuit{},
+            OSSIA::OSC{},
             m_dev{"remote", m_locked_map, local_in_p, addr, remote_in_p}
         {
 
         }
 
-        virtual ~MinuitClient();
+        virtual ~Client();
+
+        bool getLearningStatus() const override
+        {
+          assert(false);
+        }
+
+        Protocol & setLearningStatus(OSSIA::Device& ossiaDevice, bool newLearn) override
+        {
+          assert(false);
+        }
+
 
         bool pullAddressValue(OSSIA::Address& addr) const override
         {
@@ -55,7 +66,7 @@ class MinuitClient: public OSSIA::Minuit
         auto& dev() { return m_dev; }
         const auto& dev() const { return m_dev; }
 
-        std::string getIp() override
+        std::string getIp() const override
         {
           return m_dev.get_remote_ip();
         }
@@ -66,7 +77,7 @@ class MinuitClient: public OSSIA::Minuit
           return *this;
         }
 
-        int getInPort() override
+        int getInPort() const override
         {
           return m_dev.get_remote_input_port();
         }
@@ -77,7 +88,7 @@ class MinuitClient: public OSSIA::Minuit
           return *this;
         }
 
-        int getOutPort() override
+        int getOutPort() const override
         {
           return m_dev.get_local_input_port();
         }
@@ -88,6 +99,7 @@ class MinuitClient: public OSSIA::Minuit
           return *this;
         }
 };
+
 }
 }
 }

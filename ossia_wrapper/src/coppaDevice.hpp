@@ -19,34 +19,34 @@ namespace oscquery
 {
 class remote_device;
 }
-namespace ow // ossia wrapper
+namespace ossia_wrapper // ossia wrapper
+{
+namespace OSCQuery
 {
 class Protocol;
-class OSCQueryClient;
 
-template<
-        typename OssiaDevice_T, // coppa::ow::OSCQueryClient
-        typename CoppaDevice_T> // coppa::oscquery::remote_device
+template<typename Protocol_T>
 class Device :
         public OSSIA::Device,
-        public coppa::ow::Node<Device<OssiaDevice_T, CoppaDevice_T>>
+        public Node<Device<Protocol_T>>
 {
-        std::shared_ptr<OssiaDevice_T> m_proto;
+        std::shared_ptr<Protocol_T> m_proto;
 
     public:
-        using node_type = coppa::ow::Node<Device<OssiaDevice_T, CoppaDevice_T>>;
-        Device(std::shared_ptr<OssiaDevice_T> prot):
+        using node_type = coppa::ossia_wrapper::OSCQuery::Node<Device<Protocol_T>>;
+        using protocol_type = typename Protocol_T::protocol_t;
+        Device(std::shared_ptr<Protocol_T> prot):
             m_proto{prot}
         {
 
         }
 
-        virtual ~Device()
+        virtual ~Device() noexcept
         {
 
         }
 
-        CoppaDevice_T& dev()
+        protocol_type& dev()
         {
             return m_proto->dev();
         }
@@ -195,6 +195,7 @@ class Device :
             }
         }
 };
+}
 
 }
 }

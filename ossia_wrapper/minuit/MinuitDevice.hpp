@@ -14,27 +14,27 @@
 #include "MinuitNode.hpp"
 namespace coppa
 {
-
-namespace minuit_wrapper
+namespace ossia_wrapper
+{
+namespace Minuit
 {
 class Protocol;
 
 template<
-    typename OssiaProtocol_T, // coppa::ow::OSCQueryClient
-    typename CoppaDevice_T> // coppa::oscquery::remote_device
+    typename Protocol_T>
 class Device :
     public OSSIA::Device,
-    public coppa::minuit_wrapper::Node<Device<OssiaProtocol_T, CoppaDevice_T>>,
-    public std::enable_shared_from_this<Device<OssiaProtocol_T, CoppaDevice_T>>
+    public Node<Device<Protocol_T>>
 {
-    std::shared_ptr<OssiaProtocol_T> m_proto;
+    std::shared_ptr<Protocol_T> m_proto;
 
   public:
-    using node_type = coppa::minuit_wrapper::Node<Device<OssiaProtocol_T, CoppaDevice_T>>;
-    Device(std::shared_ptr<OssiaProtocol_T> prot):
+    using node_type = coppa::ossia_wrapper::Minuit::Node<Device<Protocol_T>>;
+    using protocol_type = typename Protocol_T::protocol_t;
+
+    Device(std::shared_ptr<Protocol_T> prot):
       m_proto{prot}
     {
-
     }
 
     virtual ~Device()
@@ -42,7 +42,7 @@ class Device :
 
     }
 
-    CoppaDevice_T& dev() const
+    protocol_type& dev() const
     {
       return m_proto->dev();
     }
@@ -80,7 +80,7 @@ class Device :
     }
 
   private:
-    void make_tree_rec(const CoppaDevice_T& remote_dev)
+    void make_tree_rec(const protocol_type& remote_dev)
     {
       auto dev_ptr = std::dynamic_pointer_cast<Device>(this->shared_from_this());
 
@@ -142,6 +142,6 @@ class Device :
       }
     }
 };
-
+}
 }
 }

@@ -2,9 +2,11 @@
 #include "coppaNode.hpp"
 #include "coppaProtocol.hpp"
 #include "coppaDevice.hpp"
+
+using namespace coppa::ossia_wrapper::OSCQuery;
 namespace coppa
 {
-namespace ow
+namespace ossia_wrapper
 {
 coppaDomain::~coppaDomain()
 {
@@ -15,10 +17,9 @@ void __coppa__address__instantiate()
 {
     using type =
     Address<
-        coppa::ow::Node<
-            coppa::ow::Device<
-                coppa::ow::OSCQueryClient,
-                coppa::oscquery::remote_device
+        Node<
+            Device<
+                OSCQueryClient
             >
         >
     >;
@@ -38,9 +39,8 @@ void __coppa__address__instantiate()
 void __coppa__device__instantiate()
 {
     using type =
-      coppa::ow::Device<
-        coppa::ow::OSCQueryClient,
-        coppa::oscquery::remote_device
+      Device<
+        OSCQueryClient
     >
     ;
     type* addr;
@@ -74,10 +74,9 @@ void __coppa__device__instantiate()
 void __coppa__node_instantiate()
 {
     using type =
-      coppa::ow::Node<
-        coppa::ow::Device<
-            coppa::ow::OSCQueryClient,
-            coppa::oscquery::remote_device
+      Node<
+        Device<
+            OSCQueryClient
         >
     >
     ;

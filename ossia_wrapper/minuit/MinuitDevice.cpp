@@ -5,8 +5,9 @@
 
 static void test()
 {
-    using namespace coppa;
-    using namespace coppa::minuit_wrapper;
-  auto proto = std::make_shared<coppa::minuit_wrapper::MinuitClient>("127.0.0.1");
-  coppa::minuit_wrapper::Device<MinuitClient, MinuitClient::protocol_t> dev(proto);
+  using namespace coppa;
+  using namespace coppa::ossia_wrapper;
+  using namespace coppa::ossia_wrapper::Minuit;
+  auto proto = std::make_shared<coppa::ossia_wrapper::Minuit::MinuitClient>("127.0.0.1", 12345, 4356);
+  Device<MinuitClient> dev(proto);
 }

@@ -4,7 +4,7 @@
 /*
 static void test()
 {
-  coppa::minuit_wrapper::Address<coppa::minuit_wrapper::Node<coppa::minuit_wrapper::Device>
+  coppa::ossia_wrapper::Address<coppa::ossia_wrapper::Node<coppa::ossia_wrapper::Device>
 }
 
 */

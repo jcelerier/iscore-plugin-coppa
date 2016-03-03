@@ -14,7 +14,7 @@ namespace coppa
 {
 namespace ossia_wrapper // ossia wrapper
 {
-namespace Minuit
+namespace OSC
 {
 class Protocol;
 template<typename Node_T>
