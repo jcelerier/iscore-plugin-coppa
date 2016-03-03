@@ -18,7 +18,7 @@ file(GLOB_RECURSE OSSIA_WRAPPER_SRCS
     )
 
 add_library(APICoppa ${OSSIA_WRAPPER_SRCS})
-target_link_libraries(APICoppa  PUBLIC coppa OSSIAHeadersLib)
+target_link_libraries(APICoppa PUBLIC coppa OSSIAHeadersLib)
 target_include_directories(APICoppa PUBLIC "${API_HEADERS_FOLDER}")
 
 add_library(${PROJECT_NAME} ${SRCS} ${HDRS})
@@ -27,6 +27,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
                       Qt5::Core Qt5::Widgets
                       iscore_lib_base iscore_plugin_deviceexplorer
                       iscore_plugin_ossia iscore_addon_network
-                      APICoppa KF5DNSSD)
+                      coppa APICoppa KF5DNSSD)
 
 setup_iscore_plugin(${PROJECT_NAME})

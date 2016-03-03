@@ -136,15 +136,6 @@ class coppaDomain : public OSSIA::Domain
 template<typename Node_T>
 class Address : public OSSIA::Address
 {
-    using device_type = typename Node_T::device_type;
-    std::shared_ptr<Node_T> m_parent;
-
-    mutable std::shared_ptr<OSSIA::Domain> m_domain;
-
-    device_type& dev() const
-    {
-      return static_cast<typename Node_T::device_type*>(m_parent->getDevice().get())->dev();
-    }
   public:
     Address(std::shared_ptr<Node_T> parent):
       m_parent{parent}
@@ -157,6 +148,22 @@ class Address : public OSSIA::Address
 
     }
 
+  private:
+    using device_type = typename Node_T::device_type;
+    std::shared_ptr<Node_T> m_parent;
+
+    mutable std::shared_ptr<OSSIA::Domain> m_domain;
+
+    auto& dev() const
+    {
+      return static_cast<typename Node_T::device_type*>(m_parent->getDevice().get())->dev();
+    }
+
+    const coppa::ossia::Parameter& parameter() const
+    {
+      return *dev().find(m_parent->destination());
+    }
+
     const std::shared_ptr<OSSIA::Node> getNode() const override
     {
       return m_parent;
@@ -164,14 +171,20 @@ class Address : public OSSIA::Address
 
     const OSSIA::Value* pullValue() override
     {
-      auto res = dev().get(m_parent->destination());
+      auto res = dev().pull(m_parent->destination());
       res.wait();
-      return coppaToOSSIAValue(res.get_value().variants);
+      auto param = res.get();
+      return coppaToOSSIAValue(param);
     }
 
     OSSIA::Address& pushValue(const OSSIA::Value* v) override
     {
-      return setValue(v);
+      if(v)
+      {
+        dev().push(m_parent->destination(), fromTopValue(v));
+      }
+
+      return *this;
     }
 
     const OSSIA::Value* getValue() const override
@@ -248,12 +261,12 @@ class Address : public OSSIA::Address
 
     OSSIA::Address& setValue(const OSSIA::Value* v) override
     {
-      if(!v)
-        return *this;
-
-      coppa::ossia::Parameter p = dev().map().get(m_parent->destination());
-      p = fromTopValue(v);
-      dev().setter().set(p.destination, p);
+      if(v)
+      {
+        dev().template update<std::string>(m_parent->destination(), [=] (auto& p) {
+          static_cast<coppa::ossia::Values&>(p) = fromTopValue(v);
+        });
+      }
 
       return *this;
     }
@@ -310,7 +323,7 @@ class Address : public OSSIA::Address
 
     OSSIA::BoundingMode getBoundingMode() const override
     {
-      return OSSIA::BoundingMode::FREE;
+      return static_cast<OSSIA::BoundingMode>(parameter().bounding);
     }
 
     OSSIA::Address& setBoundingMode(OSSIA::BoundingMode) override
@@ -320,7 +333,7 @@ class Address : public OSSIA::Address
 
     bool getRepetitionFilter() const override
     {
-      return false;
+      return parameter().repetitionFilter;
     }
 
     OSSIA::Address& setRepetitionFilter(bool) override

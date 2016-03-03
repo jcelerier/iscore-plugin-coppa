@@ -14,14 +14,10 @@ class MinuitClient: public OSSIA::Minuit
 
         locked_map<basic_map<map_type>>
           m_locked_map{m_base_map};
-/*
-        remote_map_setter<
-            locked_map<basic_map<map_type>>,
-            osc::sender>
-          m_setter{m_locked_map};
-*/
+
         ossia::minuit_remote_impl_future m_dev;
     public:
+        using protocol_t = ossia::minuit_remote_impl_future;
         MinuitClient(std::string addr):
             OSSIA::Minuit{},
             m_dev{"rimoute", m_locked_map, 13579, addr, 9998}
@@ -31,12 +27,12 @@ class MinuitClient: public OSSIA::Minuit
 
         virtual ~MinuitClient();
 
-        bool pullAddressValue(OSSIA::Address&) const override
+        bool pullAddressValue(OSSIA::Address& addr) const override
         {
             return false;
         }
 
-        bool pushAddressValue(const OSSIA::Address&) const override
+        bool pushAddressValue(const OSSIA::Address& addr) const override
         {
             return false;
         }
@@ -54,30 +50,39 @@ class MinuitClient: public OSSIA::Minuit
         auto& dev() { return m_dev; }
         const auto& dev() const { return m_dev; }
 
-        /*! get IP */
-        virtual std::string getIp() {
-
+        std::string getIp() override
+        {
+          return m_dev.get_remote_ip();
         }
 
-        virtual Protocol & setIp(std::string) {
-
+        Protocol & setIp(std::string str) override
+        {
+          m_dev.set_remote_ip(str);
+          return *this;
         }
 
         /*! get port where to send messages */
-        virtual int getInPort() {
-
+        int getInPort() override
+        {
+          return m_dev.get_remote_input_port();
         }
 
-        virtual Protocol & setInPort(int) {
-
+        Protocol & setInPort(int p) override
+        {
+          m_dev.set_remote_input_port(p);
+          return *this;
         }
 
         /*! get port where messages are sent back */
-        virtual int getOutPort() {
-
+        int getOutPort() override
+        {
+          return m_dev.get_local_input_port();
         }
 
-        virtual Protocol & setOutPort(int) {
+        Protocol & setOutPort(int p) override
+        {
+          m_dev.set_local_input_port(p);
+          return *this;
 
         }
 };

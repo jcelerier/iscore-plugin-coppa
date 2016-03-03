@@ -79,6 +79,7 @@ class Node :
 
         OSSIA::Node& setName(std::string) override
         {
+            // Remove the old parameter and create a new one with the new name
             return *this;
         }
 
