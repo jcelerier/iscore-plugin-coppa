@@ -40,7 +40,7 @@ OSCQueryDevice::OSCQueryDevice(const Device::DeviceSettings& settings):
 {
     using namespace OSSIA;
 
-    m_capas.canRefresh = true;
+    m_capas.canRefreshTree = true;
     auto proto = std::make_shared<coppa::ow::OSCQueryClient>(
                 settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>().host.toStdString());
 
