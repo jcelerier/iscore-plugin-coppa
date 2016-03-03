@@ -7,6 +7,7 @@
 #include <coppa/minuit/parameter.hpp>
 #include <ossia_wrapper/ossia_wrapper.hpp>
 #include <ossia_wrapper/domain.hpp>
+#include <future>
 
 namespace coppa
 {
@@ -53,9 +54,13 @@ class Address : public OSSIA::Address
     const OSSIA::Value* pullValue() override
     {
       auto res = dev().pull(m_parent->destination());
-      res.wait();
-      auto param = res.get();
-      return coppaToOSSIAValue(param);
+      switch(res.wait_for(std::chrono::milliseconds(50)))
+      {
+        case std::future_status::ready:
+          return coppaToOSSIAValue(res.get());
+        default:
+          return nullptr;
+      }
     }
 
     OSSIA::Address& pushValue(const OSSIA::Value* v) override

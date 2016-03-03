@@ -69,14 +69,21 @@ class Device :
       auto fut_refresh = dev().refresh();
 
       // Wait until we get a full namespace
-      fut_refresh.wait();
-
-      // Show our namespace
-      for(auto elt : dev().map())
+      switch(fut_refresh.wait_for(std::chrono::seconds(5)))
       {
-        std::cerr << elt.destination << std::endl;
+        case std::future_status::ready:
+        {
+          for(auto elt : dev().map())
+          {
+            std::cerr << elt.destination << "\n";
+          }
+          make_tree_rec(m_proto->dev());
+        }
+          return true;
+        default:
+          return false;
+          break;
       }
-      return true;
     }
 
   private:

@@ -9,7 +9,7 @@
 
 #include <boost/lambda/lambda.hpp>
 #include <boost/algorithm/string/split.hpp>
-
+#include <ossia_wrapper/ossia.hpp>
 namespace coppa
 {
 namespace ossia_wrapper // ossia wrapper
@@ -47,6 +47,12 @@ class Node :
     {
 
     }
+
+    const auto& device() const
+    { return m_device; }
+
+    auto& get_children()
+    { return m_children; }
 
     Node(const std::shared_ptr<Node>& parent,
          const std::shared_ptr<Device_T>& dev,
@@ -111,30 +117,7 @@ class Node :
         OSSIA::Container<OSSIA::Node>::const_iterator it,
         std::string name) override
     {
-      coppa::ossia::Parameter p;
-      p.destination = m_fullDestination + "/" + name;
-      auto& map = m_device->dev().map();
-      bool inserted = false;
-      int num = 0;
-      while(!inserted)
-      {
-        auto it = map.find(p.destination);
-        if(it == map.end())
-        {
-          map.insert(p);
-          inserted = true;
-        }
-        else
-        {
-          p.destination = m_fullDestination + "/" + name + "." + std::to_string(num);
-        }
-      }
-      auto node = std::make_shared<node_type>(
-                    this->shared_from_this(),
-                    m_device,
-                    p.destination);
-      auto res_it = m_children.insert(it, std::move(node));
-      return res_it;
+      return ossia_wrapper::emplace(*this, it, name, {});
     }
 
     OSSIA::Container<OSSIA::Node>::iterator insert(
@@ -149,35 +132,12 @@ class Node :
         OSSIA::Container<OSSIA::Node>::const_iterator it,
         const std::string& name,
         OSSIA::Value::Type t,
-        OSSIA::AccessMode = {},
-        const std::shared_ptr<OSSIA::Domain>& = {},
-        OSSIA::BoundingMode = {},
+        OSSIA::AccessMode am = {},
+        const std::shared_ptr<OSSIA::Domain>& d = {},
+        OSSIA::BoundingMode bm = {},
         bool repetitionFilter = {}) override
     {
-      coppa::ossia::Parameter p;
-      p.destination = m_fullDestination + "/" + name;
-      auto& map = m_device->dev().map();
-      bool inserted = false;
-      int num = 0;
-      while(!inserted)
-      {
-        auto it = map.find(p.destination);
-        if(it == map.end())
-        {
-          map.insert(p);
-          inserted = true;
-        }
-        else
-        {
-          p.destination = m_fullDestination + "/" + name + "." + std::to_string(num);
-        }
-      }
-      auto node = std::make_shared<node_type>(
-                    this->shared_from_this(),
-                    m_device,
-                    p.destination);
-      auto res_it = m_children.insert(it, std::move(node));
-      return res_it;
+      return ossia_wrapper::emplace(*this, it, name, t, am, d, bm, repetitionFilter);
     }
 
     OSSIA::Container<OSSIA::Node>::iterator erase(
@@ -189,3 +149,4 @@ class Node :
 }
 }
 }
+

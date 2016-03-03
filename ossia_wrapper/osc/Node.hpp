@@ -9,6 +9,7 @@
 
 #include <boost/lambda/lambda.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <ossia_wrapper/ossia.hpp>
 
 namespace coppa
 {
@@ -47,6 +48,12 @@ class Node :
         {
 
         }
+
+        const auto& device() const
+        { return this->m_device; }
+
+        auto& get_children()
+        { return m_children; }
 
         Node(const std::shared_ptr<Node>& parent,
              const std::shared_ptr<Device_T>& dev,
@@ -108,36 +115,36 @@ class Node :
         }
 
         OSSIA::Container<OSSIA::Node>::iterator emplace(
-                OSSIA::Container<OSSIA::Node>::const_iterator,
-                std::string) override
+            OSSIA::Container<OSSIA::Node>::const_iterator it,
+            std::string name) override
         {
-            return {};
+          return ossia_wrapper::emplace(*this, it, name, {});
         }
 
         OSSIA::Container<OSSIA::Node>::iterator insert(
-                OSSIA::Container<OSSIA::Node>::const_iterator,
-                std::shared_ptr<OSSIA::Node>,
-                std::string) override
+            OSSIA::Container<OSSIA::Node>::const_iterator,
+            std::shared_ptr<OSSIA::Node>,
+            std::string) override
         {
-            return {};
+          return {};
         }
 
         OSSIA::Container<OSSIA::Node>::iterator emplace(
-                OSSIA::Container<OSSIA::Node>::const_iterator,
-                const std::string&,
-                OSSIA::Value::Type,
-                OSSIA::AccessMode = {},
-                const std::shared_ptr<OSSIA::Domain>& = {},
-                OSSIA::BoundingMode = {},
-                bool repetitionFilter = {}) override
+            OSSIA::Container<OSSIA::Node>::const_iterator it,
+            const std::string& name,
+            OSSIA::Value::Type t,
+            OSSIA::AccessMode am = {},
+            const std::shared_ptr<OSSIA::Domain>& d = {},
+            OSSIA::BoundingMode bm = {},
+            bool repetitionFilter = {}) override
         {
-            return {};
+          return ossia_wrapper::emplace(*this, it, name, t, am, d, bm, repetitionFilter);
         }
 
         OSSIA::Container<OSSIA::Node>::iterator erase(
-                OSSIA::Container<OSSIA::Node>::const_iterator) override
+            OSSIA::Container<OSSIA::Node>::const_iterator) override
         {
-            return {};
+          return {};
         }
 };
 }
