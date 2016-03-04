@@ -3,6 +3,7 @@
 #include <Network/Node.h>
 #include <future>
 #include <chrono>
+#include <coppa/minuit/parameter_ostream.hpp>
 
 namespace coppa
 {
@@ -90,7 +91,7 @@ struct UpdatableDevice
                             dev_ptr,
                             new_addr);
 
-             // n->setDevice(dev_ptr);
+              n->setDevice(dev_ptr);
 
               // Creation of an address if it is an existing keyin the map.
               auto param_it = remote_dev.map().find(new_addr);
@@ -98,6 +99,7 @@ struct UpdatableDevice
               {
                 bool valid = false;
 
+                std::cerr << new_addr << " " << elt << std::endl;
                 auto t = ToOssiaType(elt, valid);
                 if(valid)
                 {
