@@ -19,6 +19,54 @@ namespace ossia_wrapper
 namespace Minuit
 {
 class Protocol;
+inline OSSIA::Value::Type ToOssiaType(const coppa::ossia::Values& v, bool& valid)
+{
+  valid = false;
+  if(v.variants.size() > 1)
+  {
+    valid = true;
+    return OSSIA::Value::Type::TUPLE;
+  }
+  else if(v.variants.size() == 1)
+  {
+    switch(coppa::ossia::which(v.variants[0]))
+    {
+      case coppa::ossia::Type::none_t:
+        valid = false;
+        return {};
+      case coppa::ossia::Type::impulse_t:
+        valid = true;
+        return OSSIA::Value::Type::IMPULSE;
+      case coppa::ossia::Type::bool_t:
+        valid = true;
+        return OSSIA::Value::Type::BOOL;
+      case coppa::ossia::Type::int_t:
+        valid = true;
+        return OSSIA::Value::Type::INT;
+      case coppa::ossia::Type::float_t:
+        valid = true;
+        return OSSIA::Value::Type::FLOAT;
+      case coppa::ossia::Type::char_t:
+        valid = true;
+        return OSSIA::Value::Type::CHAR;
+      case coppa::ossia::Type::string_t:
+        valid = true;
+        return OSSIA::Value::Type::STRING;
+      case coppa::ossia::Type::tuple_t:
+        valid = true;
+        return OSSIA::Value::Type::TUPLE;
+      case coppa::ossia::Type::generic_t:
+        valid = true;
+        return OSSIA::Value::Type::GENERIC;
+    }
+  }
+  else
+  {
+    // no type
+    valid = false;
+    return {};
+  }
+}
 
 template<
     typename Protocol_T>
@@ -126,8 +174,19 @@ class Device :
               auto new_node_it = parentnode->emplace(parentnode->children().end(), new_addr);
               auto n = dynamic_cast<node_type*>(new_node_it->get());
               n->setDevice(dev_ptr);
-              if(remote_dev.map().has(new_addr))
-                n->createAddress({});
+
+              auto param_it = remote_dev.map().find(new_addr);
+              if(param_it != remote_dev.map().end())
+              {
+                const auto& val = *param_it;
+                bool valid = false;
+
+                auto t = ToOssiaType(val, valid);
+                if(valid)
+                {
+                  n->createAddress(t);
+                }
+              }
 
               if(k == path.size() - 1)
               {

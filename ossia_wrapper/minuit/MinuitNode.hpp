@@ -98,7 +98,7 @@ class Node :
             return m_address;
         }
 
-        std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type) override
+        std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type t) override
         {
             // We don't change the address for now.
             if(!m_address)

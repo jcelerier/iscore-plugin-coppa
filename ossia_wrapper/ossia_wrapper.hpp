@@ -15,6 +15,9 @@ auto parameter(const std::shared_ptr<Node_T>& node)
 
 inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
 {
+  if(!val)
+    return nullptr;
+
   using namespace oscpack;
   using namespace eggs::variants;
   const struct vis {

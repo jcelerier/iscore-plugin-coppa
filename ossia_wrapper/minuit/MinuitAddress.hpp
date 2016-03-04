@@ -140,10 +140,12 @@ class Address : public OSSIA::Address
 
     const std::shared_ptr<OSSIA::Domain>& getDomain() const override
     {
-      coppa::ossia::Parameter p = dev().map().get(m_parent->destination());
+      if(!m_domain)
+      {
+        coppa::ossia::Parameter p = dev().map().get(m_parent->destination());
+        m_domain = std::make_shared<Domain>(p);
+      }
 
-      auto dom = std::make_shared<Domain>(p);
-      m_domain = dom;
       return m_domain;
     }
 
