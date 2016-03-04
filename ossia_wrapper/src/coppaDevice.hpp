@@ -139,7 +139,7 @@ class Device :
                 boost::split(path, addr, boost::lambda::_1 == '/');
                 path.erase(path.begin());
 
-                for(int i = 0; i < path.size(); i++)
+                for(auto i = 0U; i < path.size(); i++)
                 {
                     const auto& children = node->children();
                     auto it = boost::range::find_if(
@@ -150,10 +150,10 @@ class Device :
                     {
                         // We have to start adding sub-nodes from here.
                         node_type* parentnode = node;
-                        for(int k = i; k < path.size(); k++)
+                        for(auto k = i; k < path.size(); k++)
                         {
                             std::string new_addr;
-                            for(int str_idx = 0; str_idx <= k; str_idx++)
+                            for(auto str_idx = 0U; str_idx <= k; str_idx++)
                             {
                                 new_addr += "/" + path[str_idx];
                             }

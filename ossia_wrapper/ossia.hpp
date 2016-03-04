@@ -24,7 +24,7 @@ auto emplace(
   p.bounding = static_cast<coppa::ossia::Bounding::Mode>(bounding);
   p.repetitionFilter = repetitionFilter;
 
-  auto& map = node.device()->dev().map();
+  auto& map = node.device().lock()->dev().map();
   bool inserted = false;
   int num = 0;
   while(!inserted)
@@ -42,7 +42,7 @@ auto emplace(
   }
   auto child = std::make_shared<typename Node_T::node_type>(
                 node.shared_from_this(),
-                node.device(),
+                node.device().lock(),
                 p.destination);
   auto res_it = node.get_children().insert(it, std::move(child));
   return res_it;

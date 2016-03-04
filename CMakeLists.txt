@@ -18,6 +18,7 @@ file(GLOB_RECURSE OSSIA_WRAPPER_SRCS
     )
 
 add_library(APICoppa ${OSSIA_WRAPPER_SRCS})
+## setup_iscore_common_lib_features(APICoppa)
 target_link_libraries(APICoppa PUBLIC coppa OSSIAHeadersLib)
 target_include_directories(APICoppa PUBLIC "${API_HEADERS_FOLDER}")
 

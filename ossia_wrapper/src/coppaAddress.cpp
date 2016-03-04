@@ -23,7 +23,7 @@ void __coppa__address__instantiate()
             >
         >
     >;
-    type* addr;
+    type* addr{};
     delete addr;
     type& v = *addr;
 
@@ -43,7 +43,7 @@ void __coppa__device__instantiate()
         OSCQueryClient
     >
     ;
-    type* addr;
+    type* addr{};
     delete addr;
     type& d = *addr;
 
@@ -80,7 +80,7 @@ void __coppa__node_instantiate()
         >
     >
     ;
-    type* addr;
+    type* addr{};
     type& d = *addr;
     delete addr;
     d.getParent();

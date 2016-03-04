@@ -9,15 +9,13 @@
 #include "src/coppaNode.hpp"
 #include "src/coppaProtocol.hpp"
 #include "src/coppaDevice.hpp"
-#include "minuit/Node.hpp"
 #include "minuit/Protocol.hpp"
-#include "osc/Node.hpp"
 #include "osc/Protocol.hpp"
-#include "local/Node.hpp"
 #include "local/Protocol.hpp"
 
 #include "generic/Address.hpp"
 #include "generic/Device.hpp"
+#include "generic/Node.hpp"
 
 namespace coppa
 {

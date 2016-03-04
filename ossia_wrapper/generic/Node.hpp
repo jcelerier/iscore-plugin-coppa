@@ -12,23 +12,20 @@
 #include <ossia_wrapper/ossia.hpp>
 namespace coppa
 {
-namespace ossia_wrapper // ossia wrapper
+namespace ossia_wrapper
 {
 template<typename Node_T, typename Impl>
 class Address;
 
-namespace Local
-{
-class Protocol;
-template<typename Device_T> // coppa::ow::Device
+template<typename Device_T>
 class Node :
     public virtual OSSIA::Node,
     public std::enable_shared_from_this<Node<Device_T>>
 {
   protected:
     std::shared_ptr<OSSIA::Address> m_address;
-    std::shared_ptr<Device_T> m_device;
-    std::shared_ptr<OSSIA::Node> m_parent;
+    std::weak_ptr<Device_T> m_device;
+    std::weak_ptr<OSSIA::Node> m_parent;
 
     std::string m_fullDestination;
     std::string m_name;
@@ -57,8 +54,8 @@ class Node :
     Node(const std::shared_ptr<Node>& parent,
          const std::shared_ptr<Device_T>& dev,
          const std::string& dest):
-      m_parent{parent},
       m_device{dev},
+      m_parent{parent},
       m_fullDestination{dest}
     {
       std::vector<std::string> vec;
@@ -74,12 +71,12 @@ class Node :
 
     std::shared_ptr<OSSIA::Node> getParent() const override
     {
-      return m_parent;
+      return m_parent.lock();
     }
 
     std::shared_ptr<OSSIA::Device> getDevice() const override
     {
-      return m_device;
+      return m_device.lock();
     }
 
     std::string getName() const override
@@ -153,5 +150,3 @@ class Node :
 };
 }
 }
-}
-
