@@ -10,16 +10,17 @@
 #include <boost/lambda/lambda.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <ossia_wrapper/ossia.hpp>
+
 namespace coppa
 {
 namespace ossia_wrapper // ossia wrapper
 {
 template<typename Node_T, typename Impl>
 class Address;
-
-namespace Local
+namespace Minuit
 {
 class Protocol;
+
 template<typename Device_T> // coppa::ow::Device
 class Node :
     public virtual OSSIA::Node,
@@ -48,11 +49,10 @@ class Node :
 
     }
 
-    const auto& device() const
-    { return m_device; }
-
     auto& get_children()
     { return m_children; }
+    const auto& device() const
+    { return m_device; }
 
     Node(const std::shared_ptr<Node>& parent,
          const std::shared_ptr<Device_T>& dev,
@@ -61,8 +61,13 @@ class Node :
       m_device{dev},
       m_fullDestination{dest}
     {
+
+      if(dest.find("//") != std::string::npos)
+      {
+        assert(false);
+      }
       std::vector<std::string> vec;
-      boost::split(vec, m_fullDestination, boost::lambda::_1 == '/');
+      boost::split(vec, m_fullDestination, [] (char c) { return c == '/';});
 
       m_name = vec.back();
     }
@@ -98,11 +103,15 @@ class Node :
       return m_address;
     }
 
-    std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type) override
+    std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type t) override
     {
+      using address_impl_t = typename device_type::ossia_protocol_t::address_impl_t;
       // We don't change the address for now.
       if(!m_address)
-        m_address = std::make_shared<Address<node_type,  typename device_type::ossia_protocol_t::address_impl_t>>(this->shared_from_this());
+      {
+        m_address = std::make_shared<
+                    Address<node_type, address_impl_t>>(this->shared_from_this());
+      }
       return m_address;
     }
 
@@ -125,6 +134,7 @@ class Node :
         std::shared_ptr<OSSIA::Node>,
         std::string) override
     {
+      assert(false);
       return {};
     }
 
@@ -143,10 +153,10 @@ class Node :
     OSSIA::Container<OSSIA::Node>::iterator erase(
         OSSIA::Container<OSSIA::Node>::const_iterator) override
     {
+      assert(false);
       return {};
     }
 };
 }
 }
 }
-

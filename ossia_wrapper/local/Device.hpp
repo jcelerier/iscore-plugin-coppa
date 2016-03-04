@@ -32,6 +32,7 @@ class Device :
   public:
     using node_type = coppa::ossia_wrapper::Local::Node<Device<Protocol_T>>;
     using protocol_type = typename Protocol_T::protocol_t;
+    using ossia_protocol_t = Protocol_T;
 
     Device(std::shared_ptr<Protocol_T> prot):
       m_proto{prot}

@@ -1,9 +1,4 @@
-#include "MinuitProtocol.hpp"
-
-static void test()
-{
-  coppa::ossia_wrapper::Minuit::MinuitClient c("127.0.0.1", 13579, 9998);
-}
+#include "Protocol.hpp"
 
 std::shared_ptr<OSSIA::Minuit> OSSIA::Minuit::create(
     std::string ip,

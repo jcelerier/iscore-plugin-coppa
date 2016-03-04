@@ -1,6 +1,7 @@
 #pragma once
 #include <Network/Protocol/Local.h>
 #include <coppa/minuit/device/osc_local_device.hpp>
+#include <ossia_wrapper/generic/Address.hpp>
 namespace coppa
 {
 namespace ossia_wrapper
@@ -19,6 +20,7 @@ class Client: public OSSIA::Local
         ossia::osc_local_impl m_dev;
     public:
         using protocol_t = ossia::osc_local_impl;
+        using address_impl_t = StandardAddress;
         Client():
             OSSIA::Local{},
             m_dev{"local", m_locked_map, 0, "", 0}

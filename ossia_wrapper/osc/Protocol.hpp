@@ -1,6 +1,8 @@
 #pragma once
 #include <Network/Protocol/OSC.h>
 #include <coppa/minuit/device/osc_local_device.hpp>
+#include <ossia_wrapper/generic/Address.hpp>
+
 namespace coppa
 {
 namespace ossia_wrapper
@@ -20,6 +22,7 @@ class Client: public OSSIA::OSC
         ossia::osc_local_impl m_dev;
     public:
         using protocol_t = ossia::osc_local_impl;
+        using address_impl_t = StandardAddress;
         Client(
             const std::string& addr,
             unsigned int remote_in_p,

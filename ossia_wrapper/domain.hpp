@@ -29,8 +29,9 @@ class Domain final : public OSSIA::Domain
       return coppaToOSSIAValue(m_domain.min);
     }
 
-    OSSIA::Domain& setMin(const OSSIA::Value*) override
+    OSSIA::Domain& setMin(const OSSIA::Value* val) override
     {
+      assert(false);
       return *this;
     }
 
@@ -41,16 +42,21 @@ class Domain final : public OSSIA::Domain
 
     OSSIA::Domain& setMax(const OSSIA::Value*) override
     {
+      assert(false);
       return *this;
     }
 
     std::vector<const OSSIA::Value*> getValues() const override
     {
-      return {};
+      std::vector<const OSSIA::Value*> range;
+      for(const auto& val : m_domain.range_values)
+        range.push_back(coppaToOSSIAValue(val));
+      return range;
     }
 
     OSSIA::Domain& setValues(std::vector<const OSSIA::Value*> values) override
     {
+      assert(false);
       return *this;;
     }
 };

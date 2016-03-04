@@ -9,18 +9,17 @@
 #include "src/coppaNode.hpp"
 #include "src/coppaProtocol.hpp"
 #include "src/coppaDevice.hpp"
-#include "minuit/MinuitAddress.hpp"
-#include "minuit/MinuitNode.hpp"
-#include "minuit/MinuitProtocol.hpp"
-#include "minuit/MinuitDevice.hpp"
-#include "osc/Address.hpp"
+#include "minuit/Node.hpp"
+#include "minuit/Protocol.hpp"
+#include "minuit/Device.hpp"
 #include "osc/Node.hpp"
 #include "osc/Protocol.hpp"
 #include "osc/Device.hpp"
-#include "local/Address.hpp"
 #include "local/Node.hpp"
 #include "local/Protocol.hpp"
 #include "local/Device.hpp"
+
+#include "generic/Address.hpp"
 
 namespace OSSIA
 {

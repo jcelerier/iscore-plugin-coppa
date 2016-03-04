@@ -13,6 +13,73 @@ auto parameter(const std::shared_ptr<Node_T>& node)
   return static_cast<typename Node_T::device_type*>(node->getDevice().get())->dev().map().get(node->destination());
 }
 
+
+inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Variant& val)
+{
+  if(!val)
+    return OSSIA::Value::Type::IMPULSE;
+
+  using namespace oscpack;
+  using namespace eggs::variants;
+  const struct vis {
+      using return_type = OSSIA::Value::Type;
+      return_type operator()(const coppa::ossia::None& ) const {
+        return OSSIA::Value::Type::IMPULSE;
+      }
+
+      return_type operator()(const coppa::ossia::Impulse&) const {
+        return OSSIA::Value::Type::IMPULSE;
+      }
+
+      return_type operator()(int32_t) const {
+        return OSSIA::Value::Type::INT;
+      }
+
+      return_type operator()(float) const {
+        return OSSIA::Value::Type::FLOAT;
+      }
+
+      return_type operator()(bool) const {
+        return OSSIA::Value::Type::BOOL;
+      }
+
+      return_type operator()(char) const {
+        return OSSIA::Value::Type::CHAR;
+      }
+
+      return_type operator()(const std::string&) const {
+        return OSSIA::Value::Type::STRING;
+      }
+
+      return_type operator()(const coppa::ossia::Tuple&) const {
+        return OSSIA::Value::Type::TUPLE;
+      }
+
+      return_type operator()(const coppa::ossia::Generic&) const {
+        return OSSIA::Value::Type::GENERIC;
+      }
+
+  } visitor{};
+
+  return eggs::variants::apply(visitor, val);
+}
+
+inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Values& val)
+{
+  if(val.variants.size() == 0)
+  {
+    return OSSIA::Value::Type::IMPULSE;
+  }
+  else if(val.variants.size() == 1)
+  {
+    return coppaToOSSIAValueType(val.variants[0]);
+  }
+  else
+  {
+    return OSSIA::Value::Type::TUPLE;
+  }
+}
+
 inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
 {
   if(!val)
@@ -70,19 +137,20 @@ inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Values& val)
   {
     return new OSSIA::Impulse;
   }
-
-  if(val.variants.size() == 1)
+  else if(val.variants.size() == 1)
   {
     return coppaToOSSIAValue(val.variants[0]);
   }
-
-  auto tuple = new OSSIA::Tuple;
-  tuple->value.reserve(val.variants.size());
-  for(const auto& v : val.variants)
+  else
   {
-    tuple->value.push_back(coppaToOSSIAValue(v));
+    auto tuple = new OSSIA::Tuple;
+    tuple->value.reserve(val.variants.size());
+    for(const auto& v : val.variants)
+    {
+      tuple->value.push_back(coppaToOSSIAValue(v));
+    }
+    return tuple;
   }
-  return tuple;
 }
 
 inline coppa::ossia::Variant fromValue(const OSSIA::Value* v)

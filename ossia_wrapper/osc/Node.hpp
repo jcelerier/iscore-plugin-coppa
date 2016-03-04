@@ -15,11 +15,11 @@ namespace coppa
 {
 namespace ossia_wrapper // ossia wrapper
 {
+template<typename Node_T, typename Impl>
+class Address;
 namespace OSC
 {
 class Protocol;
-template<typename Node_T>
-class Address;
 
 template<typename Device_T> // coppa::ow::Device
 class Node :
@@ -103,7 +103,7 @@ class Node :
         {
             // We don't change the address for now.
             if(!m_address)
-                m_address = std::make_shared<Address<node_type>>(this->shared_from_this());
+                m_address = std::make_shared<Address<node_type, typename device_type::ossia_protocol_t::address_impl_t>>(this->shared_from_this());
             return m_address;
         }
 
