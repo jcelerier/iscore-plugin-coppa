@@ -62,14 +62,14 @@ class Node :
       m_fullDestination{dest}
     {
       std::vector<std::string> vec;
-      boost::split(vec, m_fullDestination, boost::lambda::_1 == '/');
+      boost::split(vec, m_fullDestination, [] (char c) { return c == '/';});
 
       m_name = vec.back();
     }
 
     void setDevice(std::shared_ptr<device_type> dev)
     {
-      m_device = dev;
+      m_device = std::move(dev);
     }
 
     std::shared_ptr<OSSIA::Node> getParent() const override
@@ -100,9 +100,12 @@ class Node :
 
     std::shared_ptr<OSSIA::Address> createAddress(OSSIA::Value::Type) override
     {
+      using address_impl_t = typename device_type::ossia_protocol_t::address_impl_t;
       // We don't change the address for now.
       if(!m_address)
-        m_address = std::make_shared<Address<node_type,  typename device_type::ossia_protocol_t::address_impl_t>>(this->shared_from_this());
+      {
+        m_address = std::make_shared<Address<node_type, address_impl_t>>(this->shared_from_this());
+      }
       return m_address;
     }
 
@@ -125,6 +128,7 @@ class Node :
         std::shared_ptr<OSSIA::Node>,
         std::string) override
     {
+      assert(false);
       return {};
     }
 
@@ -143,6 +147,7 @@ class Node :
     OSSIA::Container<OSSIA::Node>::iterator erase(
         OSSIA::Container<OSSIA::Node>::const_iterator) override
     {
+      assert(false);
       return {};
     }
 };

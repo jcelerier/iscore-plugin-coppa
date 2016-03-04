@@ -13,6 +13,54 @@ auto parameter(const std::shared_ptr<Node_T>& node)
   return static_cast<typename Node_T::device_type*>(node->getDevice().get())->dev().map().get(node->destination());
 }
 
+inline OSSIA::Value::Type ToOssiaType(const coppa::ossia::Values& v, bool& valid)
+{
+  valid = false;
+  if(v.variants.size() > 1)
+  {
+    valid = true;
+    return OSSIA::Value::Type::TUPLE;
+  }
+  else if(v.variants.size() == 1)
+  {
+    switch(coppa::ossia::which(v.variants[0]))
+    {
+      case coppa::ossia::Type::none_t:
+        valid = false;
+        return {};
+      case coppa::ossia::Type::impulse_t:
+        valid = true;
+        return OSSIA::Value::Type::IMPULSE;
+      case coppa::ossia::Type::bool_t:
+        valid = true;
+        return OSSIA::Value::Type::BOOL;
+      case coppa::ossia::Type::int_t:
+        valid = true;
+        return OSSIA::Value::Type::INT;
+      case coppa::ossia::Type::float_t:
+        valid = true;
+        return OSSIA::Value::Type::FLOAT;
+      case coppa::ossia::Type::char_t:
+        valid = true;
+        return OSSIA::Value::Type::CHAR;
+      case coppa::ossia::Type::string_t:
+        valid = true;
+        return OSSIA::Value::Type::STRING;
+      case coppa::ossia::Type::tuple_t:
+        valid = true;
+        return OSSIA::Value::Type::TUPLE;
+      case coppa::ossia::Type::generic_t:
+        valid = true;
+        return OSSIA::Value::Type::GENERIC;
+    }
+  }
+  else
+  {
+    // no type
+    valid = false;
+    return {};
+  }
+}
 
 inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Variant& val)
 {

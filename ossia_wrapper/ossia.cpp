@@ -11,15 +11,44 @@
 #include "src/coppaDevice.hpp"
 #include "minuit/Node.hpp"
 #include "minuit/Protocol.hpp"
-#include "minuit/Device.hpp"
 #include "osc/Node.hpp"
 #include "osc/Protocol.hpp"
-#include "osc/Device.hpp"
 #include "local/Node.hpp"
 #include "local/Protocol.hpp"
-#include "local/Device.hpp"
 
 #include "generic/Address.hpp"
+#include "generic/Device.hpp"
+
+namespace coppa
+{
+namespace ossia_wrapper
+{
+namespace Local
+{
+template<typename Protocol_T>
+struct Device : public GenericDeviceBase<Protocol_T, Node<Device<Protocol_T>>, StandardDevice, Device<Protocol_T>>
+{
+  using GenericDeviceBase<Protocol_T, Node<Device<Protocol_T>>, StandardDevice, Device<Protocol_T>>::GenericDeviceBase;
+};
+}
+namespace Minuit
+{
+template<typename Protocol_T>
+struct Device : public GenericDeviceBase<Protocol_T, Node<Device<Protocol_T>>, UpdatableDevice, Device<Protocol_T>>
+{
+  using GenericDeviceBase<Protocol_T, Node<Device<Protocol_T>>, UpdatableDevice, Device<Protocol_T>>::GenericDeviceBase;
+};
+}
+namespace OSC
+{
+template<typename Protocol_T>
+struct Device : public GenericDeviceBase<Protocol_T, Node<Device<Protocol_T>>, StandardDevice, Device<Protocol_T>>
+{
+  using GenericDeviceBase<Protocol_T, Node<Device<Protocol_T>>, StandardDevice, Device<Protocol_T>>::GenericDeviceBase;
+};
+}
+}
+}
 
 namespace OSSIA
 {
