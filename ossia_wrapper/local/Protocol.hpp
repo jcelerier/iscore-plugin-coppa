@@ -4,22 +4,22 @@
 #include <ossia_wrapper/generic/Address.hpp>
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 namespace Local
 {
 class Client: public OSSIA::Local
 {
-    using map_type = ParameterMapType<ossia::Parameter>;
+    using map_type = ParameterMapType<minuit::Parameter>;
         basic_map<map_type>
           m_base_map;
 
         locked_map<basic_map<map_type>>
           m_locked_map{m_base_map};
 
-        ossia::osc_local_impl m_dev;
+        minuit::osc_local_impl m_dev;
     public:
-        using protocol_t = ossia::osc_local_impl;
+        using protocol_t = minuit::osc_local_impl;
         using address_impl_t = StandardAddress;
         Client():
             OSSIA::Local{},

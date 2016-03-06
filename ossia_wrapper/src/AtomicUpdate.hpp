@@ -4,7 +4,7 @@
 
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 template<typename DeviceToCheck>
 bool atomic_connect_wrapper(

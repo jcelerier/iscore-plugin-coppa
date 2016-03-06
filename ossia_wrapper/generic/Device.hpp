@@ -7,7 +7,7 @@
 
 namespace coppa
 {
-namespace ossia_wrapper // ossia wrapper
+namespace minuit_wrapper // ossia wrapper
 {
 struct StandardDevice
 {

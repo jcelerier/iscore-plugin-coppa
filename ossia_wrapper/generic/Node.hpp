@@ -12,7 +12,7 @@
 #include <ossia_wrapper/ossia.hpp>
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 template<typename Node_T, typename Impl>
 class Address;
@@ -118,7 +118,7 @@ class Node :
         OSSIA::Container<OSSIA::Node>::const_iterator it,
         std::string name) override
     {
-      return ossia_wrapper::emplace(*this, it, name, {});
+      return minuit_wrapper::emplace(*this, it, name, {});
     }
 
     OSSIA::Container<OSSIA::Node>::iterator insert(
@@ -144,7 +144,7 @@ class Node :
         OSSIA::BoundingMode bm = {},
         bool repetitionFilter = {}) override
     {
-      return ossia_wrapper::emplace(*this, it, name, t, am, d, bm, repetitionFilter);
+      return minuit_wrapper::emplace(*this, it, name, t, am, d, bm, repetitionFilter);
     }
 
     OSSIA::Container<OSSIA::Node>::iterator erase(

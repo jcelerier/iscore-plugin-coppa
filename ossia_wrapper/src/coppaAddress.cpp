@@ -3,10 +3,10 @@
 #include "coppaProtocol.hpp"
 #include "coppaDevice.hpp"
 
-using namespace coppa::ossia_wrapper::OSCQuery;
+using namespace coppa::minuit_wrapper::OSCQuery;
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 coppaDomain::~coppaDomain()
 {

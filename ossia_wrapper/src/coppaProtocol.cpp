@@ -2,10 +2,10 @@
 
 std::shared_ptr<OSSIA::OSCQueryClient> OSSIA::OSCQueryClient::create(std::string addr)
 {
-    return std::make_shared<coppa::ossia_wrapper::OSCQuery::OSCQueryClient>(addr);
+    return std::make_shared<coppa::minuit_wrapper::OSCQuery::OSCQueryClient>(addr);
 }
 
-coppa::ossia_wrapper::OSCQuery::OSCQueryClient::~OSCQueryClient()
+coppa::minuit_wrapper::OSCQuery::OSCQueryClient::~OSCQueryClient()
 {
 
 }

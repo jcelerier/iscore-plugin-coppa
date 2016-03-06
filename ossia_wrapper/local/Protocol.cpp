@@ -2,10 +2,10 @@
 
 std::shared_ptr<OSSIA::Local> OSSIA::Local::create()
 {
-  return std::make_shared<coppa::ossia_wrapper::Local::Client>();
+  return std::make_shared<coppa::minuit_wrapper::Local::Client>();
 }
 
-coppa::ossia_wrapper::Local::Client::~Client()
+coppa::minuit_wrapper::Local::Client::~Client()
 {
 
 }

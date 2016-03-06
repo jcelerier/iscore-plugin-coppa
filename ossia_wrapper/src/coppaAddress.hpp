@@ -16,7 +16,7 @@ namespace oscquery
 {
 class remote_device;
 }
-namespace ossia_wrapper // ossia wrapper
+namespace minuit_wrapper // ossia wrapper
 {
 namespace OSCQuery
 {

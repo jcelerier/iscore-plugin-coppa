@@ -7,10 +7,10 @@
 #include <future>
 namespace coppa
 {
-namespace ossia_wrapper // ossia wrapper
+namespace minuit_wrapper // ossia wrapper
 {
 
-inline OSSIA::AccessMode toOSSIAAccess(coppa::ossia::Access::Mode acc)
+inline OSSIA::AccessMode toOSSIAAccess(coppa::minuit::Access::Mode acc)
 {
   switch(acc)
   {
@@ -48,14 +48,14 @@ inline coppa::Access::Mode toCoppaAccess(OSSIA::AccessMode acc)
   }
 }
 
-inline OSSIA::BoundingMode toOSSIABounding(coppa::ossia::Bounding::Mode bound)
+inline OSSIA::BoundingMode toOSSIABounding(coppa::minuit::Bounding::Mode bound)
 {
   return static_cast<OSSIA::BoundingMode>(bound);
 }
 
-inline coppa::ossia::Bounding::Mode toCoppaBounding(OSSIA::BoundingMode bound)
+inline coppa::minuit::Bounding::Mode toCoppaBounding(OSSIA::BoundingMode bound)
 {
-  return static_cast<coppa::ossia::Bounding::Mode>(bound);
+  return static_cast<coppa::minuit::Bounding::Mode>(bound);
 }
 
 
@@ -133,8 +133,8 @@ struct GenericAddress
     {
       if(!addr.domain)
       {
-        coppa::ossia::Parameter p = addr.dev().map().get(addr.destination());
-        addr.domain = std::make_shared<ossia_wrapper::Domain>(p);
+        coppa::minuit::Parameter p = addr.dev().map().get(addr.destination());
+        addr.domain = std::make_shared<minuit_wrapper::Domain>(p);
       }
 
       return addr.domain;
@@ -234,7 +234,7 @@ class Address : public OSSIA::Address
       return static_cast<typename Node_T::device_type*>(m_parent.lock()->getDevice().get())->dev();
     }
 
-    const coppa::ossia::Parameter& parameter() const
+    const coppa::minuit::Parameter& parameter() const
     { return *dev().find(this->destination()); }
 
   private:

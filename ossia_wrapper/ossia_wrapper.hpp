@@ -4,7 +4,7 @@
 
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 
 template<typename Node_T>
@@ -13,7 +13,7 @@ auto parameter(const std::shared_ptr<Node_T>& node)
   return static_cast<typename Node_T::device_type*>(node->getDevice().get())->dev().map().get(node->destination());
 }
 
-inline OSSIA::Value::Type ToOssiaType(const coppa::ossia::Values& v, bool& valid)
+inline OSSIA::Value::Type ToOssiaType(const coppa::minuit::Values& v, bool& valid)
 {
   valid = false;
   if(v.variants.size() > 1)
@@ -23,33 +23,33 @@ inline OSSIA::Value::Type ToOssiaType(const coppa::ossia::Values& v, bool& valid
   }
   else if(v.variants.size() == 1)
   {
-    switch(coppa::ossia::which(v.variants[0]))
+    switch(coppa::minuit::which(v.variants[0]))
     {
-      case coppa::ossia::Type::none_t:
+      case coppa::minuit::Type::none_t:
         valid = false;
         return {};
-      case coppa::ossia::Type::impulse_t:
+      case coppa::minuit::Type::impulse_t:
         valid = true;
         return OSSIA::Value::Type::IMPULSE;
-      case coppa::ossia::Type::bool_t:
+      case coppa::minuit::Type::bool_t:
         valid = true;
         return OSSIA::Value::Type::BOOL;
-      case coppa::ossia::Type::int_t:
+      case coppa::minuit::Type::int_t:
         valid = true;
         return OSSIA::Value::Type::INT;
-      case coppa::ossia::Type::float_t:
+      case coppa::minuit::Type::float_t:
         valid = true;
         return OSSIA::Value::Type::FLOAT;
-      case coppa::ossia::Type::char_t:
+      case coppa::minuit::Type::char_t:
         valid = true;
         return OSSIA::Value::Type::CHAR;
-      case coppa::ossia::Type::string_t:
+      case coppa::minuit::Type::string_t:
         valid = true;
         return OSSIA::Value::Type::STRING;
-      case coppa::ossia::Type::tuple_t:
+      case coppa::minuit::Type::tuple_t:
         valid = true;
         return OSSIA::Value::Type::TUPLE;
-      case coppa::ossia::Type::generic_t:
+      case coppa::minuit::Type::generic_t:
         valid = true;
         return OSSIA::Value::Type::GENERIC;
     }
@@ -62,7 +62,7 @@ inline OSSIA::Value::Type ToOssiaType(const coppa::ossia::Values& v, bool& valid
   }
 }
 
-inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Variant& val)
+inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::minuit::Variant& val)
 {
   if(!val)
     return OSSIA::Value::Type::IMPULSE;
@@ -71,11 +71,11 @@ inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Variant& val
   using namespace eggs::variants;
   const struct vis {
       using return_type = OSSIA::Value::Type;
-      return_type operator()(const coppa::ossia::None& ) const {
+      return_type operator()(const coppa::minuit::None& ) const {
         return OSSIA::Value::Type::IMPULSE;
       }
 
-      return_type operator()(const coppa::ossia::Impulse&) const {
+      return_type operator()(const coppa::minuit::Impulse&) const {
         return OSSIA::Value::Type::IMPULSE;
       }
 
@@ -99,11 +99,11 @@ inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Variant& val
         return OSSIA::Value::Type::STRING;
       }
 
-      return_type operator()(const coppa::ossia::Tuple&) const {
+      return_type operator()(const coppa::minuit::Tuple&) const {
         return OSSIA::Value::Type::TUPLE;
       }
 
-      return_type operator()(const coppa::ossia::Generic&) const {
+      return_type operator()(const coppa::minuit::Generic&) const {
         return OSSIA::Value::Type::GENERIC;
       }
 
@@ -112,7 +112,7 @@ inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Variant& val
   return eggs::variants::apply(visitor, val);
 }
 
-inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Values& val)
+inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::minuit::Values& val)
 {
   if(val.variants.size() == 0)
   {
@@ -129,12 +129,12 @@ inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Values& val)
 }
 
 
-inline coppa::ossia::Values OSSIAValueTypeToCoppa(OSSIA::Value::Type t)
+inline coppa::minuit::Values OSSIAValueTypeToCoppa(OSSIA::Value::Type t)
 {
-  coppa::ossia::Values v;
+  coppa::minuit::Values v;
   switch (t) {
     case OSSIA::Value::Type::IMPULSE:
-      v.variants.push_back(coppa::ossia::Impulse{});
+      v.variants.push_back(coppa::minuit::Impulse{});
       break;
     case OSSIA::Value::Type::INT:
       v.variants.push_back(int32_t{});
@@ -164,7 +164,7 @@ inline coppa::ossia::Values OSSIAValueTypeToCoppa(OSSIA::Value::Type t)
   return v;
 }
 
-inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Variant& val)
+inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::minuit::Variant& val)
 {
   if(!val)
     return nullptr;
@@ -173,11 +173,11 @@ inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Varia
   using namespace eggs::variants;
   const struct vis {
       using return_type = OSSIA::Value*;
-      return_type operator()(const coppa::ossia::None& ) const {
+      return_type operator()(const coppa::minuit::None& ) const {
         return new OSSIA::Impulse;
       }
 
-      return_type operator()(const coppa::ossia::Impulse& val) const {
+      return_type operator()(const coppa::minuit::Impulse& val) const {
         return new OSSIA::Impulse;
       }
 
@@ -201,12 +201,12 @@ inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Varia
         return new OSSIA::String(val);
       }
 
-      return_type operator()(const coppa::ossia::Tuple& t) const {
+      return_type operator()(const coppa::minuit::Tuple& t) const {
         // We don't really know how to do this ?
         return nullptr;
       }
 
-      return_type operator()(const coppa::ossia::Generic& val) const {
+      return_type operator()(const coppa::minuit::Generic& val) const {
         return nullptr;
       }
 
@@ -215,7 +215,7 @@ inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Varia
   return std::unique_ptr<OSSIA::Value>(eggs::variants::apply(visitor, val));
 }
 
-[[deprecated]] inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Values& val) // leaks
+[[deprecated]] inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::minuit::Values& val) // leaks
 {
   if(val.variants.size() == 0)
   {
@@ -237,12 +237,12 @@ inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Varia
   }
 }
 
-inline coppa::ossia::Variant fromValue(const OSSIA::Value* v)
+inline coppa::minuit::Variant fromValue(const OSSIA::Value* v)
 {
   switch(v->getType())
   {
     case OSSIA::Value::Type::IMPULSE:
-      return coppa::ossia::Impulse{};
+      return coppa::minuit::Impulse{};
       break;
     case OSSIA::Value::Type::INT:
       return int32_t(static_cast<const OSSIA::Int*>(v)->value);
@@ -261,7 +261,7 @@ inline coppa::ossia::Variant fromValue(const OSSIA::Value* v)
       break;
     case OSSIA::Value::Type::TUPLE:
     {
-      coppa::ossia::Tuple t;
+      coppa::minuit::Tuple t;
       const auto& vec = static_cast<const OSSIA::Tuple*>(v)->value;
       for(auto elt : vec)
       {
@@ -276,9 +276,9 @@ inline coppa::ossia::Variant fromValue(const OSSIA::Value* v)
 }
 
 
-inline coppa::ossia::Values fromTopValue(const OSSIA::Value* v)
+inline coppa::minuit::Values fromTopValue(const OSSIA::Value* v)
 {
-  coppa::ossia::Values coppa_v;
+  coppa::minuit::Values coppa_v;
   if(auto tpl = dynamic_cast<const OSSIA::Tuple*>(v))
   {
     for(auto val : tpl->value)

@@ -8,7 +8,7 @@
 #include <ossia_wrapper/src/coppaAddress.hpp>
 #include "OSCQuerySpecificSettings.hpp"
 
-using device_t = coppa::ossia_wrapper::OSCQuery::Device<coppa::ossia_wrapper::OSCQuery::OSCQueryClient>;
+using device_t = coppa::minuit_wrapper::OSCQuery::Device<coppa::minuit_wrapper::OSCQuery::OSCQueryClient>;
 Device::Node OSCQueryDevice::refresh()
 {
     auto dev = static_cast<device_t*>(m_dev.get());
@@ -23,7 +23,7 @@ Device::Node OSCQueryDevice::refresh()
             b = false;
         });
 
-        bool ok = coppa::ossia_wrapper::atomic_connect_wrapper(dev->dev(), b);
+        bool ok = coppa::minuit_wrapper::atomic_connect_wrapper(dev->dev(), b);
     }
 
     return OSSIADevice::refresh();
@@ -41,7 +41,7 @@ OSCQueryDevice::OSCQueryDevice(const Device::DeviceSettings& settings):
     using namespace OSSIA;
 
     m_capas.canRefreshTree = true;
-    auto proto = std::make_shared<coppa::ossia_wrapper::OSCQuery::OSCQueryClient>(
+    auto proto = std::make_shared<coppa::minuit_wrapper::OSCQuery::OSCQueryClient>(
                 settings.deviceSpecificSettings.value<OSCQuerySpecificSettings>().host.toStdString());
 
     bool b = true;
@@ -50,7 +50,7 @@ OSCQueryDevice::OSCQueryDevice(const Device::DeviceSettings& settings):
         b = false;
     });
 
-    bool ok = coppa::ossia_wrapper::atomic_connect_wrapper(proto->dev(), b);
+    bool ok = coppa::minuit_wrapper::atomic_connect_wrapper(proto->dev(), b);
     if(!ok && m_serverThread.joinable())
     {
         m_serverThread.join();

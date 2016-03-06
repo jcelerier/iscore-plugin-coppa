@@ -4,7 +4,7 @@
 #include <ossia_wrapper/ossia_wrapper.hpp>
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 
 template<typename Node_T>
@@ -18,14 +18,14 @@ auto emplace(
     OSSIA::BoundingMode bounding = {},
     bool repetitionFilter = {})
 {
-  coppa::ossia::Parameter p;
+  coppa::minuit::Parameter p;
   p.destination = node.destination() + "/" + name;
   auto instance_dest = p.destination + ".";
-  p.access = static_cast<coppa::ossia::Access::Mode>(access);
-  p.bounding = static_cast<coppa::ossia::Bounding::Mode>(bounding);
+  p.access = static_cast<coppa::minuit::Access::Mode>(access);
+  p.bounding = static_cast<coppa::minuit::Bounding::Mode>(bounding);
   p.repetitionFilter = repetitionFilter;
-  static_cast<coppa::ossia::Values&>(p) = coppa::ossia_wrapper::OSSIAValueTypeToCoppa(type);
-  static_cast<coppa::ossia::Range&>(p) = fromOSSIADomain(domain.get());
+  static_cast<coppa::minuit::Values&>(p) = coppa::minuit_wrapper::OSSIAValueTypeToCoppa(type);
+  static_cast<coppa::minuit::Range&>(p) = fromOSSIADomain(domain.get());
 
   auto& map = node.device().lock()->dev().map();
   bool inserted = false;

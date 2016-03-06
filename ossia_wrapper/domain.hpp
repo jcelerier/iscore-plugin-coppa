@@ -4,17 +4,17 @@
 #include <ossia_wrapper/ossia_wrapper.hpp>
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 class Domain final : public OSSIA::Domain
 {
-    coppa::ossia::Range m_domain;
+    coppa::minuit::Range m_domain;
     mutable std::unique_ptr<OSSIA::Value> m_minCache;
     mutable std::unique_ptr<OSSIA::Value> m_maxCache;
     mutable std::vector<std::unique_ptr<OSSIA::Value>> m_valuesCache;
 
   public:
-    Domain(coppa::ossia::Range d):
+    Domain(coppa::minuit::Range d):
       m_domain(d)
     {
 
@@ -24,8 +24,8 @@ class Domain final : public OSSIA::Domain
     {
       if(!other)
         return;
-      m_domain.min = coppa::ossia_wrapper::fromValue(other->getMin());
-      m_domain.max = coppa::ossia_wrapper::fromValue(other->getMax());
+      m_domain.min = coppa::minuit_wrapper::fromValue(other->getMin());
+      m_domain.max = coppa::minuit_wrapper::fromValue(other->getMax());
       // TODO values
     }
 
@@ -45,7 +45,7 @@ class Domain final : public OSSIA::Domain
     OSSIA::Domain& setMin(const OSSIA::Value* val) override
     {
       if(val)
-        m_domain.min = coppa::ossia_wrapper::fromValue(val);
+        m_domain.min = coppa::minuit_wrapper::fromValue(val);
       return *this;
     }
 
@@ -58,7 +58,7 @@ class Domain final : public OSSIA::Domain
     OSSIA::Domain& setMax(const OSSIA::Value* val) override
     {
       if(val)
-        m_domain.max = coppa::ossia_wrapper::fromValue(val);
+        m_domain.max = coppa::minuit_wrapper::fromValue(val);
       return *this;
     }
 
@@ -82,16 +82,16 @@ class Domain final : public OSSIA::Domain
     }
 };
 
-inline coppa::ossia::Range fromOSSIADomain(OSSIA::Domain* dom)
+inline coppa::minuit::Range fromOSSIADomain(OSSIA::Domain* dom)
 {
-  coppa::ossia::Range r;
+  coppa::minuit::Range r;
   if(!dom)
     return r;
 
   if(auto min = dom->getMin())
-    r.min = coppa::ossia_wrapper::fromValue(min);
+    r.min = coppa::minuit_wrapper::fromValue(min);
   if(auto max = dom->getMax())
-    r.max = coppa::ossia_wrapper::fromValue(max);
+    r.max = coppa::minuit_wrapper::fromValue(max);
 
   // TODO values
   return r;

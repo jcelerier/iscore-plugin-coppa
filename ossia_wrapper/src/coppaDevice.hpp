@@ -19,7 +19,7 @@ namespace oscquery
 {
 class remote_device;
 }
-namespace ossia_wrapper // ossia wrapper
+namespace minuit_wrapper // ossia wrapper
 {
 namespace OSCQuery
 {
@@ -33,7 +33,7 @@ class Device :
         std::shared_ptr<Protocol_T> m_proto;
 
     public:
-        using node_type = coppa::ossia_wrapper::OSCQuery::Node<Device<Protocol_T>>;
+        using node_type = coppa::minuit_wrapper::OSCQuery::Node<Device<Protocol_T>>;
         using protocol_type = typename Protocol_T::protocol_t;
         Device(std::shared_ptr<Protocol_T> prot):
             m_proto{prot}

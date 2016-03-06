@@ -19,7 +19,7 @@
 
 namespace coppa
 {
-namespace ossia_wrapper
+namespace minuit_wrapper
 {
 namespace Local
 {
@@ -100,28 +100,28 @@ std::shared_ptr<OSSIA::Device> OSSIA::Device::create(
     std::string)
 {
   using namespace coppa;
-  using namespace ossia_wrapper;
-  if(auto clt = std::dynamic_pointer_cast<ossia_wrapper::OSCQuery::OSCQueryClient>(p))
+  using namespace minuit_wrapper;
+  if(auto clt = std::dynamic_pointer_cast<minuit_wrapper::OSCQuery::OSCQueryClient>(p))
   {
-    auto dev = std::make_shared<ossia_wrapper::OSCQuery::Device<ossia_wrapper::OSCQuery::OSCQueryClient>>(clt);
+    auto dev = std::make_shared<minuit_wrapper::OSCQuery::Device<minuit_wrapper::OSCQuery::OSCQueryClient>>(clt);
     dev->setDevice(dev);
     return dev;
   }
-  else if(auto clt = std::dynamic_pointer_cast<ossia_wrapper::Local::Client>(p))
+  else if(auto clt = std::dynamic_pointer_cast<minuit_wrapper::Local::Client>(p))
   {
-    auto dev = std::make_shared<ossia_wrapper::Local::Device<ossia_wrapper::Local::Client>>(clt);
+    auto dev = std::make_shared<minuit_wrapper::Local::Device<minuit_wrapper::Local::Client>>(clt);
     dev->setDevice(dev);
     return dev;
   }
-  else if(auto clt = std::dynamic_pointer_cast<ossia_wrapper::OSC::Client>(p))
+  else if(auto clt = std::dynamic_pointer_cast<minuit_wrapper::OSC::Client>(p))
   {
-    auto dev = std::make_shared<ossia_wrapper::OSC::Device<ossia_wrapper::OSC::Client>>(clt);
+    auto dev = std::make_shared<minuit_wrapper::OSC::Device<minuit_wrapper::OSC::Client>>(clt);
     dev->setDevice(dev);
     return dev;
   }
-  else if(auto clt = std::dynamic_pointer_cast<ossia_wrapper::Minuit::MinuitClient>(p))
+  else if(auto clt = std::dynamic_pointer_cast<minuit_wrapper::Minuit::MinuitClient>(p))
   {
-    auto dev = std::make_shared<ossia_wrapper::Minuit::Device<ossia_wrapper::Minuit::MinuitClient>>(clt);
+    auto dev = std::make_shared<minuit_wrapper::Minuit::Device<minuit_wrapper::Minuit::MinuitClient>>(clt);
     dev->setDevice(dev);
     return dev;
   }
