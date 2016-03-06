@@ -164,7 +164,7 @@ inline coppa::ossia::Values OSSIAValueTypeToCoppa(OSSIA::Value::Type t)
   return v;
 }
 
-inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
+inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Variant& val)
 {
   if(!val)
     return nullptr;
@@ -212,14 +212,14 @@ inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
 
   } visitor{};
 
-  return eggs::variants::apply(visitor, val);
+  return std::unique_ptr<OSSIA::Value>(eggs::variants::apply(visitor, val));
 }
 
-[[deprecated]] inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Values& val) // leaks
+[[deprecated]] inline std::unique_ptr<OSSIA::Value> coppaToOSSIAValue(const coppa::ossia::Values& val) // leaks
 {
   if(val.variants.size() == 0)
   {
-    return new OSSIA::Impulse;
+    return std::make_unique<OSSIA::Impulse>();
   }
   else if(val.variants.size() == 1)
   {
@@ -231,9 +231,9 @@ inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
     tuple->value.reserve(val.variants.size());
     for(const auto& v : val.variants)
     {
-      tuple->value.push_back(coppaToOSSIAValue(v));
+      tuple->value.push_back(coppaToOSSIAValue(v).release());
     }
-    return tuple;
+    return std::unique_ptr<OSSIA::Value>(tuple);
   }
 }
 

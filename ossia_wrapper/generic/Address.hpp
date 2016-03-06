@@ -62,16 +62,16 @@ inline coppa::ossia::Bounding::Mode toCoppaBounding(OSSIA::BoundingMode bound)
 struct GenericAddress
 {
     template<typename Address_T>
-    static const OSSIA::Value* getValue(Address_T& addr)
+    static OSSIA::Value* getValue(Address_T& addr)
     {
       auto it = addr.dev().find(addr.destination());
       if(it != addr.dev().map().end())
-        return coppaToOSSIAValue(*it);
+        return coppaToOSSIAValue(*it).release();
       return nullptr;
     }
 
     template<typename Address_T>
-    static const OSSIA::Value* cloneValue(Address_T& addr, std::vector<char> = {})
+    static OSSIA::Value* cloneValue(Address_T& addr, std::vector<char> = {})
     {
       return getValue(addr);
     }
@@ -188,7 +188,7 @@ struct PullableAddress : public GenericAddress
       switch(res.wait_for(std::chrono::milliseconds(50)))
       {
         case std::future_status::ready:
-          return coppaToOSSIAValue(res.get());
+          return coppaToOSSIAValue(res.get()).release();
         default:
           return nullptr;
       }
@@ -240,6 +240,7 @@ class Address : public OSSIA::Address
   private:
     using device_type = typename Node_T::device_type;
     std::weak_ptr<Node_T> m_parent;
+    mutable std::unique_ptr<const OSSIA::Value> m_value;
 
     const std::shared_ptr<OSSIA::Node> getNode() const override
     {
@@ -248,7 +249,8 @@ class Address : public OSSIA::Address
 
     const OSSIA::Value* pullValue() override
     {
-      return AddressImpl::pullValue(*this);
+      m_value.reset(AddressImpl::pullValue(*this));
+      return m_value.get();
     }
 
     OSSIA::Address& pushValue(const OSSIA::Value* v) override
@@ -258,7 +260,8 @@ class Address : public OSSIA::Address
 
     const OSSIA::Value* getValue() const override
     {
-      return AddressImpl::getValue(*this);
+      m_value.reset(AddressImpl::getValue(*this));
+      return m_value.get();
     }
 
     const OSSIA::Value* cloneValue(std::vector<char> = {}) const override

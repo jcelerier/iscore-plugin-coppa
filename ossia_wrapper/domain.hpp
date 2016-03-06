@@ -9,6 +9,9 @@ namespace ossia_wrapper
 class Domain final : public OSSIA::Domain
 {
     coppa::ossia::Range m_domain;
+    mutable std::unique_ptr<OSSIA::Value> m_minCache;
+    mutable std::unique_ptr<OSSIA::Value> m_maxCache;
+    mutable std::vector<std::unique_ptr<OSSIA::Value>> m_valuesCache;
 
   public:
     Domain(coppa::ossia::Range d):
@@ -35,7 +38,8 @@ class Domain final : public OSSIA::Domain
 
     const OSSIA::Value* getMin() const override
     {
-      return coppaToOSSIAValue(m_domain.min);
+      m_minCache = coppaToOSSIAValue(m_domain.min);
+      return m_minCache.get();
     }
 
     OSSIA::Domain& setMin(const OSSIA::Value* val) override
@@ -47,7 +51,8 @@ class Domain final : public OSSIA::Domain
 
     const OSSIA::Value* getMax() const override
     {
-      return coppaToOSSIAValue(m_domain.max);
+      m_maxCache = coppaToOSSIAValue(m_domain.max);
+      return m_maxCache.get();
     }
 
     OSSIA::Domain& setMax(const OSSIA::Value* val) override
@@ -59,9 +64,14 @@ class Domain final : public OSSIA::Domain
 
     std::vector<const OSSIA::Value*> getValues() const override
     {
+      m_valuesCache.clear();
+
       std::vector<const OSSIA::Value*> range;
       for(const auto& val : m_domain.range_values)
-        range.push_back(coppaToOSSIAValue(val));
+      {
+        m_valuesCache.push_back(coppaToOSSIAValue(val));
+        range.push_back(m_valuesCache.back().get());
+      }
       return range;
     }
 
