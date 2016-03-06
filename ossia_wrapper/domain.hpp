@@ -17,6 +17,15 @@ class Domain final : public OSSIA::Domain
 
     }
 
+    Domain(const OSSIA::Domain* other)
+    {
+      if(!other)
+        return;
+      m_domain.min = coppa::ossia_wrapper::fromValue(other->getMin());
+      m_domain.max = coppa::ossia_wrapper::fromValue(other->getMax());
+      // TODO values
+    }
+
     virtual ~Domain();
 
     std::shared_ptr<OSSIA::Domain> clone() const override
@@ -31,7 +40,8 @@ class Domain final : public OSSIA::Domain
 
     OSSIA::Domain& setMin(const OSSIA::Value* val) override
     {
-      assert(false);
+      if(val)
+        m_domain.min = coppa::ossia_wrapper::fromValue(val);
       return *this;
     }
 
@@ -40,9 +50,10 @@ class Domain final : public OSSIA::Domain
       return coppaToOSSIAValue(m_domain.max);
     }
 
-    OSSIA::Domain& setMax(const OSSIA::Value*) override
+    OSSIA::Domain& setMax(const OSSIA::Value* val) override
     {
-      assert(false);
+      if(val)
+        m_domain.max = coppa::ossia_wrapper::fromValue(val);
       return *this;
     }
 
@@ -60,5 +71,20 @@ class Domain final : public OSSIA::Domain
       return *this;;
     }
 };
+
+inline coppa::ossia::Range fromOSSIADomain(OSSIA::Domain* dom)
+{
+  coppa::ossia::Range r;
+  if(!dom)
+    return r;
+
+  if(auto min = dom->getMin())
+    r.min = coppa::ossia_wrapper::fromValue(min);
+  if(auto max = dom->getMax())
+    r.max = coppa::ossia_wrapper::fromValue(max);
+
+  // TODO values
+  return r;
+}
 }
 }

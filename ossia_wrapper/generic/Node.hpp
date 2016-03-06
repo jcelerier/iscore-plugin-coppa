@@ -87,6 +87,7 @@ class Node :
     OSSIA::Node& setName(std::string) override
     {
       // Remove the old parameter and create a new one with the new name
+      assert(false);
       return *this;
     }
 
@@ -121,12 +122,17 @@ class Node :
     }
 
     OSSIA::Container<OSSIA::Node>::iterator insert(
-        OSSIA::Container<OSSIA::Node>::const_iterator,
-        std::shared_ptr<OSSIA::Node>,
-        std::string) override
+        OSSIA::Container<OSSIA::Node>::const_iterator it,
+        std::shared_ptr<OSSIA::Node> node,
+        std::string name) override
     {
+      // 1. Create a coppa parameter from this node if it has an address.
       assert(false);
-      return {};
+
+      // 2. Add the node locally.
+      auto res_it = m_children.insert(it, std::move(node));
+
+      return res_it;
     }
 
     OSSIA::Container<OSSIA::Node>::iterator emplace(
@@ -142,10 +148,14 @@ class Node :
     }
 
     OSSIA::Container<OSSIA::Node>::iterator erase(
-        OSSIA::Container<OSSIA::Node>::const_iterator) override
+        OSSIA::Container<OSSIA::Node>::const_iterator it) override
     {
-      assert(false);
-      return {};
+      if(it != m_children.end())
+      {
+        auto res_it = m_children.erase(it);
+        return res_it;
+      }
+      throw std::runtime_error("Node::erase : Invalid iterator");
     }
 };
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <Network/Node.h>
 #include <coppa/minuit/parameter.hpp>
+#include <ossia_wrapper/ossia_wrapper.hpp>
 namespace coppa
 {
 namespace ossia_wrapper
@@ -19,10 +20,12 @@ auto emplace(
 {
   coppa::ossia::Parameter p;
   p.destination = node.destination() + "/" + name;
-  auto intance_dest = p.destination + ".";
+  auto instance_dest = p.destination + ".";
   p.access = static_cast<coppa::ossia::Access::Mode>(access);
   p.bounding = static_cast<coppa::ossia::Bounding::Mode>(bounding);
   p.repetitionFilter = repetitionFilter;
+  static_cast<coppa::ossia::Values&>(p) = coppa::ossia_wrapper::OSSIAValueTypeToCoppa(type);
+  static_cast<coppa::ossia::Range&>(p) = fromOSSIADomain(domain.get());
 
   auto& map = node.device().lock()->dev().map();
   bool inserted = false;
@@ -37,7 +40,7 @@ auto emplace(
     }
     else
     {
-      p.destination = intance_dest + std::to_string(num);
+      p.destination = instance_dest + std::to_string(num);
     }
   }
   auto child = std::make_shared<typename Node_T::node_type>(

@@ -128,6 +128,42 @@ inline OSSIA::Value::Type coppaToOSSIAValueType(const coppa::ossia::Values& val)
   }
 }
 
+
+inline coppa::ossia::Values OSSIAValueTypeToCoppa(OSSIA::Value::Type t)
+{
+  coppa::ossia::Values v;
+  switch (t) {
+    case OSSIA::Value::Type::IMPULSE:
+      v.variants.push_back(coppa::ossia::Impulse{});
+      break;
+    case OSSIA::Value::Type::INT:
+      v.variants.push_back(int32_t{});
+      break;
+    case OSSIA::Value::Type::FLOAT:
+      v.variants.push_back(float{});
+      break;
+    case OSSIA::Value::Type::BOOL:
+      v.variants.push_back(bool{});
+      break;
+    case OSSIA::Value::Type::CHAR:
+      v.variants.push_back(char{});
+      break;
+    case OSSIA::Value::Type::STRING:
+      v.variants.push_back(std::string{});
+      break;
+    case OSSIA::Value::Type::TUPLE:
+      // TODO ??
+      break;
+    case OSSIA::Value::Type::GENERIC:
+      // TODO ??
+      break;
+    default:
+      break;
+  }
+
+  return v;
+}
+
 inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
 {
   if(!val)
@@ -179,7 +215,7 @@ inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Variant& val)
   return eggs::variants::apply(visitor, val);
 }
 
-inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Values& val)
+[[deprecated]] inline OSSIA::Value* coppaToOSSIAValue(const coppa::ossia::Values& val) // leaks
 {
   if(val.variants.size() == 0)
   {
