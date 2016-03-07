@@ -12,7 +12,7 @@
 
 namespace coppa
 {
-namespace minuit_wrapper // ossia wrapper
+namespace ossia_wrapper // ossia wrapper
 {
 namespace OSCQuery
 {

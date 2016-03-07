@@ -5,10 +5,10 @@ std::shared_ptr<OSSIA::OSC> OSSIA::OSC::create(
     int remote_in,
     int local_in)
 {
-  return std::make_shared<coppa::minuit_wrapper::OSC::Client>(ip, remote_in, local_in);
+  return std::make_shared<coppa::ossia_wrapper::OSC::Client>(ip, remote_in, local_in);
 }
 
-coppa::minuit_wrapper::OSC::Client::~Client()
+coppa::ossia_wrapper::OSC::Client::~Client()
 {
 
 }

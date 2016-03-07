@@ -3,11 +3,11 @@
 #include <Network/Node.h>
 #include <future>
 #include <chrono>
-#include <coppa/minuit/parameter_ostream.hpp>
+#include <coppa/ossia/parameter_ostream.hpp>
 
 namespace coppa
 {
-namespace minuit_wrapper // ossia wrapper
+namespace ossia_wrapper // ossia wrapper
 {
 struct StandardDevice
 {
@@ -32,10 +32,6 @@ struct UpdatableDevice
       {
         case std::future_status::ready:
         {
-          for(auto elt : dev_impl.map())
-          {
-            std::cerr << elt.destination << elt.variants.size() << "\n";
-          }
           make_tree_rec(dev, dev_impl);
         }
           return true;
@@ -97,14 +93,7 @@ struct UpdatableDevice
               auto param_it = remote_dev.map().find(new_addr);
               if(param_it != remote_dev.map().end())
               {
-                bool valid = false;
-
-                std::cerr << new_addr << " " << elt << std::endl;
-                auto t = ToOssiaType(elt, valid);
-                if(valid)
-                {
-                  n->createAddress(t);
-                }
+                n->createAddress(ToOssiaType(*param_it));
               }
 
               // Insertion of the node

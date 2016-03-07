@@ -22,7 +22,7 @@ class OSCQueryClient : public Protocol
 
 namespace coppa
 {
-namespace minuit_wrapper
+namespace ossia_wrapper
 {
 
 namespace OSCQuery

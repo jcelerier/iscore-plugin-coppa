@@ -1,5 +1,5 @@
 #include "domain.hpp"
-coppa::minuit_wrapper::Domain::~Domain()
+coppa::ossia_wrapper::Domain::~Domain()
 {
 
 }

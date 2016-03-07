@@ -1,16 +1,16 @@
 #pragma once
 
 #include <Network/Address.h>
-#include <coppa/minuit/parameter.hpp>
+#include <coppa/ossia/parameter.hpp>
 #include <ossia_wrapper/ossia_wrapper.hpp>
 #include <ossia_wrapper/domain.hpp>
 #include <future>
 namespace coppa
 {
-namespace minuit_wrapper // ossia wrapper
+namespace ossia_wrapper // ossia wrapper
 {
 
-inline OSSIA::AccessMode toOSSIAAccess(coppa::minuit::Access::Mode acc)
+inline OSSIA::AccessMode toOSSIAAccess(coppa::ossia::Access::Mode acc)
 {
   switch(acc)
   {
@@ -48,14 +48,14 @@ inline coppa::Access::Mode toCoppaAccess(OSSIA::AccessMode acc)
   }
 }
 
-inline OSSIA::BoundingMode toOSSIABounding(coppa::minuit::Bounding::Mode bound)
+inline OSSIA::BoundingMode toOSSIABounding(coppa::ossia::Bounding::Mode bound)
 {
   return static_cast<OSSIA::BoundingMode>(bound);
 }
 
-inline coppa::minuit::Bounding::Mode toCoppaBounding(OSSIA::BoundingMode bound)
+inline coppa::ossia::Bounding::Mode toCoppaBounding(OSSIA::BoundingMode bound)
 {
-  return static_cast<coppa::minuit::Bounding::Mode>(bound);
+  return static_cast<coppa::ossia::Bounding::Mode>(bound);
 }
 
 
@@ -89,7 +89,7 @@ struct GenericAddress
     {
       if(v)
       {
-        addr.dev().set(addr.destination(), fromTopValue(v));
+        addr.dev().set(addr.destination(), coppa::ossia::Value{fromValue(v)});
       }
 
       return addr;
@@ -100,7 +100,7 @@ struct GenericAddress
     {
       if(v)
       {
-        addr.dev().push(addr.destination(), fromTopValue(v));
+        addr.dev().push(addr.destination(), coppa::ossia::Value{fromValue(v)});
       }
 
       return addr;
@@ -111,7 +111,7 @@ struct GenericAddress
     {
       auto it = addr.dev().find(addr.destination());
       if(it != addr.dev().map().end())
-        return coppaToOSSIAValueType(*it);
+        return coppaToOSSIAValueType(it->value);
       return OSSIA::Value::Type::IMPULSE;
     }
 
@@ -122,9 +122,9 @@ struct GenericAddress
     }
 
     template<typename Address_T>
-    static OSSIA::Address& setAccessMode(Address_T& addr, OSSIA::AccessMode)
+    static OSSIA::Address& setAccessMode(Address_T& addr, OSSIA::AccessMode am)
     {
-      assert(false);
+      addr.dev().set_access(addr.destination(), toCoppaAccess(am));
       return addr;
     }
 
@@ -133,17 +133,17 @@ struct GenericAddress
     {
       if(!addr.domain)
       {
-        coppa::minuit::Parameter p = addr.dev().map().get(addr.destination());
-        addr.domain = std::make_shared<minuit_wrapper::Domain>(p);
+        coppa::ossia::Parameter p = addr.dev().map().get(addr.destination());
+        addr.domain = std::make_shared<ossia_wrapper::Domain>(p);
       }
 
       return addr.domain;
     }
 
     template<typename Address_T>
-    static OSSIA::Address& setDomain(Address_T& addr, std::shared_ptr<OSSIA::Domain>)
+    static OSSIA::Address& setDomain(Address_T& addr, const std::shared_ptr<OSSIA::Domain>& dom)
     {
-      assert(false);
+      addr.dev().set_range(addr.destination(), fromOSSIADomain(dom.get()));
       return addr;
     }
 
@@ -154,9 +154,9 @@ struct GenericAddress
     }
 
     template<typename Address_T>
-    static OSSIA::Address& setBoundingMode(Address_T& addr, OSSIA::BoundingMode)
+    static OSSIA::Address& setBoundingMode(Address_T& addr, OSSIA::BoundingMode bm)
     {
-      assert(false);
+      addr.dev().set_bounding(addr.destination(), toCoppaBounding(bm));
       return addr;
     }
 
@@ -167,9 +167,9 @@ struct GenericAddress
     }
 
     template<typename Address_T>
-    static OSSIA::Address& setRepetitionFilter(Address_T& addr, bool)
+    static OSSIA::Address& setRepetitionFilter(Address_T& addr, bool b)
     {
-      assert(false);
+      addr.dev().set_repetition(addr.destination(), b);
       return addr;
     }
 };
@@ -234,7 +234,7 @@ class Address : public OSSIA::Address
       return static_cast<typename Node_T::device_type*>(m_parent.lock()->getDevice().get())->dev();
     }
 
-    const coppa::minuit::Parameter& parameter() const
+    const coppa::ossia::Parameter& parameter() const
     { return *dev().find(this->destination()); }
 
   private:

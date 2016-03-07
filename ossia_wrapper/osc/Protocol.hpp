@@ -1,27 +1,27 @@
 #pragma once
 #include <Network/Protocol/OSC.h>
-#include <coppa/minuit/device/osc_local_device.hpp>
+#include <coppa/ossia/device/osc_local_device.hpp>
 #include <ossia_wrapper/generic/Address.hpp>
 
 namespace coppa
 {
-namespace minuit_wrapper
+namespace ossia_wrapper
 {
 namespace OSC
 {
 
 class Client: public OSSIA::OSC
 {
-    using map_type = ParameterMapType<minuit::Parameter>;
+    using map_type = ParameterMapType<ossia::Parameter>;
         basic_map<map_type>
           m_base_map;
 
         locked_map<basic_map<map_type>>
           m_locked_map{m_base_map};
 
-        minuit::osc_local_impl m_dev;
+        ossia::osc_local_impl m_dev;
     public:
-        using protocol_t = minuit::osc_local_impl;
+        using protocol_t = ossia::osc_local_impl;
         using address_impl_t = StandardAddress;
         Client(
             const std::string& addr,

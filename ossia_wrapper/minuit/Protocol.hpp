@@ -1,26 +1,26 @@
 #pragma once
 #include <Network/Protocol/Minuit.h>
-#include <coppa/minuit/device/minuit_remote_future.hpp>
+#include <coppa/ossia/device/minuit_remote_future.hpp>
 #include <ossia_wrapper/generic/Address.hpp>
 namespace coppa
 {
-namespace minuit_wrapper
+namespace ossia_wrapper
 {
 
 namespace Minuit
 {
 class MinuitClient: public OSSIA::Minuit
 {
-    using map_type = ParameterMapType<minuit::Parameter>;
+    using map_type = ParameterMapType<ossia::Parameter>;
     basic_map<map_type>
     m_base_map;
 
     locked_map<basic_map<map_type>>
     m_locked_map{m_base_map};
 
-    minuit::minuit_remote_impl_future m_dev;
+    ossia::minuit_remote_impl_future m_dev;
   public:
-    using protocol_t = minuit::minuit_remote_impl_future;
+    using protocol_t = ossia::minuit_remote_impl_future;
     using address_impl_t = PullableAddress;
     MinuitClient(
         const std::string& addr,
