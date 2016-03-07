@@ -2,6 +2,7 @@
 #include <Network/Protocol/Minuit.h>
 #include <coppa/ossia/device/minuit_remote_future.hpp>
 #include <ossia_wrapper/generic/Address.hpp>
+#include <map>
 namespace coppa
 {
 namespace ossia_wrapper
@@ -19,6 +20,7 @@ class MinuitClient: public OSSIA::Minuit
     m_locked_map{m_base_map};
 
     ossia::minuit_remote_impl_future m_dev;
+
   public:
     using protocol_t = ossia::minuit_remote_impl_future;
     using address_impl_t = PullableAddress;
@@ -31,7 +33,6 @@ class MinuitClient: public OSSIA::Minuit
     {
 
     }
-
     virtual ~MinuitClient();
 
     bool pullAddressValue(OSSIA::Address& addr) const override

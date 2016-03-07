@@ -157,6 +157,13 @@ class Node :
       }
       throw std::runtime_error("Node::erase : Invalid iterator");
     }
+
+    void register_children(const std::shared_ptr<OSSIA::Node>& node)
+    {
+      auto ptr = dynamic_cast<Node*>(node.get());
+      m_children.insert(ptr->destination(), node);
+    }
+
 };
 }
 }

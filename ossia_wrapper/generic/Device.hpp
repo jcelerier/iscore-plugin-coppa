@@ -4,6 +4,7 @@
 #include <future>
 #include <chrono>
 #include <coppa/ossia/parameter_ostream.hpp>
+#include <coppa/nano-signal-slot/nano_observer.hpp>
 
 namespace coppa
 {
@@ -128,11 +129,14 @@ template<
     typename ConcreteDevice_T>
 class GenericDeviceBase :
     public OSSIA::Device,
-    public Node_T
+    public Node_T,
+    public Nano::Observer
 {
     std::shared_ptr<Protocol_T> m_proto;
+    std::map<std::string, std::weak_ptr<OSSIA::Node>> m_children;
 
   public:
+    using this_t = GenericDeviceBase<Protocol_T, Node_T, DeviceImpl_T, ConcreteDevice_T>;
     using node_type = Node_T;
     using protocol_type = typename Protocol_T::protocol_t;
     using ossia_protocol_t = Protocol_T;
@@ -140,6 +144,25 @@ class GenericDeviceBase :
     GenericDeviceBase(std::shared_ptr<Protocol_T> prot):
       m_proto{prot}
     {
+      dev().on_value_changed.template connect<GenericDeviceBase, &GenericDeviceBase::on_value_changed>(this);
+    }
+
+    void on_value_changed(std::string src, coppa::ossia::Value val)
+    {
+      auto it = m_children.find(src);
+      if(it != m_children.end())
+      {
+        auto n = it->second.lock();
+        if(n)
+        {
+          auto addr = n->getAddress();
+          if(addr)
+          {
+            auto res = coppaToOSSIAValue(val);
+            addr->send(res.get());
+          }
+        }
+      }
     }
 
     virtual ~GenericDeviceBase()
