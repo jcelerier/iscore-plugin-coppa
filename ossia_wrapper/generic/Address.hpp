@@ -177,6 +177,32 @@ struct GenericAddress
 /**
  * @brief The PullableAddress struct
  *
+ * For protocols unable to pull a value
+ */
+struct StandardAddress : public GenericAddress
+{
+    template<typename Address_T>
+    static const OSSIA::Value* pullValue(Address_T& addr)
+    {
+      return getValue(addr);
+    }
+
+    template<typename Address_T, typename Fun>
+    static const auto addCallback(Address_T& addr, Fun callback)
+    {
+      return addr.Address_T::callback_container_t::addCallback(callback);
+    }
+
+    template<typename Address_T, typename Iterator>
+    static const void removeCallback(Address_T& addr, Iterator it)
+    {
+      addr.Address_T::callback_container_t::removeCallback(it);
+    }
+};
+
+/**
+ * @brief The PullableAddress struct
+ *
  * For Minuit-like protocols able to pull a value
  */
 struct PullableAddress : public GenericAddress
@@ -193,19 +219,33 @@ struct PullableAddress : public GenericAddress
           return nullptr;
       }
     }
-};
 
-/**
- * @brief The PullableAddress struct
- *
- * For protocols unable to pull a value
- */
-struct StandardAddress : public GenericAddress
-{
-    template<typename Address_T>
-    static const OSSIA::Value* pullValue(Address_T& addr)
+    template<typename Address_T, typename Fun>
+    static const auto addCallback(Address_T& addr, Fun callback)
     {
-      return getValue(addr);
+      auto it = addr.Address_T::callback_container_t::addCallback(callback);
+      if(addr.callbacks().size() == 1)
+      {
+        addr.dev()
+            .get_value_callback(addr.destination())
+            .template connect<Address_T, &Address_T::value_callback>(addr);
+        addr.dev().listen(addr.destination(), true);
+      }
+      return it;
+    }
+
+    template<typename Address_T, typename Iterator>
+    static const void removeCallback(Address_T& addr, Iterator it)
+    {
+      addr.Address_T::callback_container_t::removeCallback(it);
+      if(addr.callbacks().size() == 0)
+      {
+        addr.dev().listen(addr.destination(), false);
+        addr.dev()
+            .get_value_callback(addr.destination())
+            .template disconnect<Address_T, &Address_T::value_callback>(addr);
+        // TODO remove when no more callbacks
+      }
     }
 };
 
@@ -213,6 +253,7 @@ template<typename Node_T, typename AddressImpl>
 class Address : public OSSIA::Address
 {
   public:
+    using callback_container_t = OSSIA::CallbackContainer<OSSIA::ValueCallback>;
     Address(std::shared_ptr<Node_T> parent):
       m_parent{parent}
     {
@@ -237,6 +278,15 @@ class Address : public OSSIA::Address
     const coppa::ossia::Parameter& parameter() const
     { return *dev().find(this->destination()); }
 
+    void value_callback(coppa::ossia::Value val)
+    {
+      auto ptr = coppaToOSSIAValue(val);
+      for(auto cb : callbacks())
+      {
+        cb(ptr.get());
+      }
+    }
+
   private:
     using device_type = typename Node_T::device_type;
     std::weak_ptr<Node_T> m_parent;
@@ -251,6 +301,16 @@ class Address : public OSSIA::Address
     {
       m_value.reset(AddressImpl::pullValue(*this));
       return m_value.get();
+    }
+
+    Address::iterator addCallback(OSSIA::ValueCallback fun) override
+    {
+      return AddressImpl::addCallback(*this, fun);
+    }
+
+    void removeCallback(Address::iterator it) override
+    {
+      AddressImpl::removeCallback(*this, it);
     }
 
     OSSIA::Address& pushValue(const OSSIA::Value* v) override
