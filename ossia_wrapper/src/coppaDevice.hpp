@@ -59,6 +59,10 @@ class Device :
         {
             return nullptr;
         }
+        std::shared_ptr<OSSIA::Node> getThis() override
+        {
+            return nullptr;
+        }
 
         std::string getName() const override
         {

@@ -262,7 +262,10 @@ class Address : public OSSIA::Address
 
     virtual ~Address()
     {
-
+        while(!m_callbacks.empty())
+        {
+            removeCallback(m_callbacks.begin());
+        }
     }
 
     mutable std::shared_ptr<OSSIA::Domain> domain;
@@ -281,10 +284,7 @@ class Address : public OSSIA::Address
     void value_callback(coppa::ossia::Value val)
     {
       auto ptr = coppaToOSSIAValue(val);
-      for(auto cb : callbacks())
-      {
-        cb(ptr.get());
-      }
+      this->send(ptr.get());
     }
 
   private:

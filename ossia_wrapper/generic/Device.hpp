@@ -144,25 +144,6 @@ class GenericDeviceBase :
     GenericDeviceBase(std::shared_ptr<Protocol_T> prot):
       m_proto{prot}
     {
-      dev().on_value_changed.template connect<GenericDeviceBase, &GenericDeviceBase::on_value_changed>(this);
-    }
-
-    void on_value_changed(std::string src, coppa::ossia::Value val)
-    {
-      auto it = m_children.find(src);
-      if(it != m_children.end())
-      {
-        auto n = it->second.lock();
-        if(n)
-        {
-          auto addr = n->getAddress();
-          if(addr)
-          {
-            auto res = coppaToOSSIAValue(val);
-            addr->send(res.get());
-          }
-        }
-      }
     }
 
     virtual ~GenericDeviceBase()

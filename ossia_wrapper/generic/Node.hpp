@@ -74,6 +74,11 @@ class Node :
       return m_parent.lock();
     }
 
+    std::shared_ptr<OSSIA::Node> getThis() override
+    {
+        return this->shared_from_this();
+    }
+
     std::shared_ptr<OSSIA::Device> getDevice() const override
     {
       return m_device.lock();
