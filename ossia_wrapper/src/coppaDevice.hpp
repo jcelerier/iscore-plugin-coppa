@@ -3,6 +3,7 @@
 #include <Network/Protocol.h>
 #include <Editor/Value.h>
 #include <Editor/Domain.h>
+#include <iscore/tools/std/Algorithms.hpp>
 #include <coppa/coppa.hpp>
 #include <coppa/oscquery/device/remote.hpp>
 #include <Misc/Container.h>
@@ -146,7 +147,7 @@ class Device :
                 for(auto i = 0U; i < path.size(); i++)
                 {
                     const auto& children = node->children();
-                    auto it = boost::range::find_if(
+                    auto it = find_if(
                                   children,
                                   [&] (const auto& ossia_node) { return ossia_node->getName() == path[i]; });
 

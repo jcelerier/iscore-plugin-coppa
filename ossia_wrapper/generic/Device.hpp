@@ -2,6 +2,7 @@
 #include <Network/Device.h>
 #include <Network/Node.h>
 #include <future>
+#include <iscore/tools/std/Algorithms.hpp>
 #include <chrono>
 #include <coppa/ossia/parameter_ostream.hpp>
 #include <coppa/nano-signal-slot/nano_observer.hpp>
@@ -66,7 +67,7 @@ struct UpdatableDevice
         for(auto i = 0U; i < path.size(); i++)
         {
           const auto& children = node->children();
-          auto it = boost::range::find_if(
+          auto it = find_if(
                       children,
                       [&] (const auto& ossia_node) { return ossia_node->getName() == path[i]; });
 
